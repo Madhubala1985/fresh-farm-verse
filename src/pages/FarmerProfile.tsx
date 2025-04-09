@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -101,6 +102,7 @@ const FarmerProfile = () => {
                     value={name} 
                     onChange={(e) => setName(e.target.value)}
                     disabled={!isEditing}
+                    placeholder="Amit Sharma"
                   />
                 </div>
                 
@@ -112,6 +114,7 @@ const FarmerProfile = () => {
                     value={email} 
                     onChange={(e) => setEmail(e.target.value)}
                     disabled={!isEditing}
+                    placeholder="amit@example.com"
                   />
                 </div>
                 
@@ -123,6 +126,7 @@ const FarmerProfile = () => {
                     value={location} 
                     onChange={(e) => setLocation(e.target.value)}
                     disabled={!isEditing}
+                    placeholder="Pune, Maharashtra"
                   />
                 </div>
                 
@@ -133,6 +137,7 @@ const FarmerProfile = () => {
                     value={bio}
                     onChange={(e) => setBio(e.target.value)}
                     disabled={!isEditing}
+                    placeholder="We are a family-owned farm near Pune specializing in organic produce..."
                   />
                 </div>
               </div>

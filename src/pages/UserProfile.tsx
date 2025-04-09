@@ -33,11 +33,15 @@ const UserProfile: React.FC = () => {
                   <p className="text-sm font-medium">Role</p>
                   <p className="text-sm text-muted-foreground capitalize">{user?.role || 'Not provided'}</p>
                 </div>
+                <div>
+                  <p className="text-sm font-medium">Location</p>
+                  <p className="text-sm text-muted-foreground">{user?.location || 'Not provided'}</p>
+                </div>
               </div>
             </CardContent>
             <CardFooter>
               <p className="text-sm text-muted-foreground">
-                Account created on April 1, 2025
+                Account created on April 9, 2025
               </p>
             </CardFooter>
           </Card>

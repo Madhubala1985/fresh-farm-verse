@@ -1,3 +1,4 @@
+
 import React from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -16,15 +17,15 @@ const FarmerPublicProfile = () => {
   // This would be fetched from an API in a real application
   const farmer = {
     id: farmerId,
-    name: 'Green Valley Farms',
+    name: 'Green Harvest Farms',
     image: 'https://images.unsplash.com/photo-1581578017093-cd30fce4eeb7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80',
     rating: 4.8,
     reviewCount: 124,
-    location: 'Riverside County, CA',
-    distance: '15 miles away',
-    phone: '+1 (555) 123-4567',
-    email: 'contact@greenvalleyfarms.com',
-    description: 'Green Valley Farms is a family-owned farm specializing in organic vegetables and fruits. We have been farming using sustainable practices for over 25 years, focusing on soil health and biodiversity.',
+    location: 'Nashik, Maharashtra',
+    distance: '25 km away',
+    phone: '+91 98765 43210',
+    email: 'contact@greenharvestfarms.com',
+    description: 'Green Harvest Farms is a family-owned farm specializing in organic vegetables and fruits. We have been farming using sustainable practices for over 20 years, focusing on soil health and biodiversity.',
     hours: {
       monday: '8:00 AM - 5:00 PM',
       tuesday: '8:00 AM - 5:00 PM',
@@ -34,8 +35,8 @@ const FarmerPublicProfile = () => {
       saturday: '9:00 AM - 3:00 PM',
       sunday: 'Closed'
     },
-    certifications: ['Certified Organic', 'Sustainable Farming', 'Non-GMO'],
-    specialties: ['Heirloom Tomatoes', 'Organic Berries', 'Fresh Herbs', 'Seasonal Vegetables']
+    certifications: ['Certified Organic', 'India Good Agricultural Practices', 'Non-GMO'],
+    specialties: ['Alphonso Mangoes', 'Organic Rice', 'Fresh Spices', 'Seasonal Vegetables']
   };
 
   return (

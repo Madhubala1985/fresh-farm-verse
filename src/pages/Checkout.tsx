@@ -26,8 +26,8 @@ const Checkout = () => {
   const [address, setAddress] = useState('');
   const [city, setCity] = useState('');
   const [state, setState] = useState('');
-  const [zip, setZip] = useState('');
-  const [paymentMethod, setPaymentMethod] = useState('credit-card');
+  const [pincode, setPincode] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState('upi');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
@@ -98,7 +98,7 @@ const Checkout = () => {
                       id="name"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      placeholder="John Doe"
+                      placeholder="Raj Patel"
                       required
                     />
                   </div>
@@ -109,7 +109,7 @@ const Checkout = () => {
                       id="address"
                       value={address}
                       onChange={(e) => setAddress(e.target.value)}
-                      placeholder="123 Main St"
+                      placeholder="123 Gandhi Road"
                       required
                     />
                   </div>
@@ -121,7 +121,7 @@ const Checkout = () => {
                         id="city"
                         value={city}
                         onChange={(e) => setCity(e.target.value)}
-                        placeholder="New York"
+                        placeholder="Mumbai"
                         required
                       />
                     </div>
@@ -132,18 +132,18 @@ const Checkout = () => {
                         id="state"
                         value={state}
                         onChange={(e) => setState(e.target.value)}
-                        placeholder="NY"
+                        placeholder="Maharashtra"
                         required
                       />
                     </div>
                     <div className="grid gap-2">
-                      <Label htmlFor="zip">ZIP Code</Label>
+                      <Label htmlFor="pincode">PIN Code</Label>
                       <Input
                         type="text"
-                        id="zip"
-                        value={zip}
-                        onChange={(e) => setZip(e.target.value)}
-                        placeholder="10001"
+                        id="pincode"
+                        value={pincode}
+                        onChange={(e) => setPincode(e.target.value)}
+                        placeholder="400001"
                         required
                       />
                     </div>
@@ -161,6 +161,17 @@ const Checkout = () => {
                     <div className="flex items-center space-x-2">
                       <Input
                         type="radio"
+                        id="upi"
+                        name="payment-method"
+                        value="upi"
+                        checked={paymentMethod === 'upi'}
+                        onChange={() => setPaymentMethod('upi')}
+                      />
+                      <Label htmlFor="upi">UPI</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Input
+                        type="radio"
                         id="credit-card"
                         name="payment-method"
                         value="credit-card"
@@ -172,13 +183,13 @@ const Checkout = () => {
                     <div className="flex items-center space-x-2">
                       <Input
                         type="radio"
-                        id="paypal"
+                        id="net-banking"
                         name="payment-method"
-                        value="paypal"
-                        checked={paymentMethod === 'paypal'}
-                        onChange={() => setPaymentMethod('paypal')}
+                        value="net-banking"
+                        checked={paymentMethod === 'net-banking'}
+                        onChange={() => setPaymentMethod('net-banking')}
                       />
-                      <Label htmlFor="paypal">PayPal</Label>
+                      <Label htmlFor="net-banking">Net Banking</Label>
                     </div>
                   </div>
                 </CardContent>
