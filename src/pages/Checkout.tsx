@@ -1,3 +1,4 @@
+
 import React from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -31,7 +32,7 @@ const Checkout = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (user) {
+    if (user && user.name) {
       setName(user.name || '');
     }
   }, [user]);
@@ -191,9 +192,9 @@ const Checkout = () => {
                 <CardContent>
                   <ul className="space-y-3">
                     {cart.map((item) => (
-                      <li key={item.id} className="flex justify-between">
-                        <span>{item.name}</span>
-                        <span>{formatPrice(item.price)}</span>
+                      <li key={item.product.id} className="flex justify-between">
+                        <span>{item.product.name}</span>
+                        <span>{formatPrice(item.product.price)}</span>
                       </li>
                     ))}
                   </ul>
