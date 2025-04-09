@@ -1,4 +1,3 @@
-
 import { createContext, useContext, useState, ReactNode, useEffect } from "react";
 import { User, AuthContextType } from "@/types";
 import { toast } from "sonner";
@@ -115,6 +114,35 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  // Mock updateUserProfile function
+  const updateUserProfile = async (userData: Partial<User>) => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      if (!user) {
+        throw new Error("User not authenticated");
+      }
+      
+      // Update user data
+      const updatedUser = { ...user, ...userData };
+      
+      setUser(updatedUser);
+      toast.success("Profile updated successfully");
+      
+      // Update in local storage
+      localStorage.setItem("farmmarket_user", JSON.stringify(updatedUser));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Profile update failed");
+      toast.error("Failed to update profile");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   // Mock logout function
   const logout = () => {
     setUser(null);
@@ -123,7 +151,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, isLoading, error }}>
+    <AuthContext.Provider value={{ user, login, register, logout, isLoading, error, updateUserProfile }}>
       {children}
     </AuthContext.Provider>
   );

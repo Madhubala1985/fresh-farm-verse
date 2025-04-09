@@ -1,10 +1,13 @@
-
 export interface User {
   id: string;
   username: string;
   email: string;
   role: 'farmer' | 'consumer' | 'admin';
   profileImage?: string;
+  name?: string;
+  bio?: string;
+  location?: string;
+  uid?: string;
 }
 
 export interface Product {
@@ -22,6 +25,9 @@ export interface Product {
   unit: string;
   createdAt: string;
   auction?: Auction;
+  rating?: number;
+  numReviews?: number;
+  countInStock?: number;
 }
 
 export interface Auction {
@@ -57,4 +63,5 @@ export interface AuthContextType {
   logout: () => void;
   isLoading: boolean;
   error: string | null;
+  updateUserProfile?: (userData: Partial<User>) => Promise<void>;
 }
