@@ -4,22 +4,24 @@ import { Product } from '@/types';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Clock, Leaf } from 'lucide-react';
-import { toast } from 'sonner';
+import { useCart } from '@/context/CartContext';
 
 interface ProductCardProps {
   product: Product;
 }
 
 const ProductCard = ({ product }: ProductCardProps) => {
-  const handleAddToCart = () => {
-    toast.success(`Added ${product.name} to your cart!`);
-  };
+  const { addItem } = useCart();
   
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-IN', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'INR',
     }).format(price);
+  };
+
+  const handleAddToCart = () => {
+    addItem(product);
   };
 
   return (
@@ -96,7 +98,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
             <Button 
               variant="outline" 
               className="border-farm-accent-orange text-farm-accent-orange hover:bg-farm-accent-orange/5"
-              onClick={() => toast.info(`Opening bidding for ${product.name}`)}
+              onClick={() => {}}
             >
               Place Bid
             </Button>
