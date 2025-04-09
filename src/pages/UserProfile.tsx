@@ -1,326 +1,293 @@
-
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Label } from '@/components/ui/label';
-import { toast } from 'sonner';
-import { useAuth } from '@/context/AuthContext';
-import { User, Edit, Save, ArrowLeft, FileImage, MapPin, Phone, Mail, UserIcon } from 'lucide-react';
+import React from 'react';
+import { CalendarDays, Card, CheckCheck, ChevronDown, FileText, LayoutDashboard, ListChecks, LucideIcon, Settings } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "@/components/ui/card"
+import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Badge } from "@/components/ui/badge"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Separator } from "@/components/ui/separator"
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
 import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
+
+interface ListItemProps {
+  icon: LucideIcon;
+  label: string;
+  description?: string;
+}
+
+const ListItem: React.FC<ListItemProps> = ({ icon: Icon, label, description }) => {
+  return (
+    <div className="grid gap-1">
+      <div className="font-semibold">{label}</div>
+      {description && (
+        <p className="text-sm text-muted-foreground">
+          {description}
+        </p>
+      )}
+    </div>
+  );
+};
 
 const UserProfile = () => {
-  const navigate = useNavigate();
-  const { user, logout } = useAuth();
-  const [activeTab, setActiveTab] = useState('profile');
-
-  // Profile edit state
-  const [isEditing, setIsEditing] = useState(false);
-  const [profile, setProfile] = useState({
-    username: user?.username || '',
-    email: user?.email || '',
-    phone: '+91 98765 43210', // Mock data
-    address: '123 Green Street, Mumbai, Maharashtra',
-    bio: 'I love buying fresh produce directly from farmers. Supporting local agriculture is important to me!',
-    profileImage: user?.profileImage || '/placeholder.svg',
-  });
-
-  // Mock order history
-  const orders = [
-    {
-      id: 'ORD-12345',
-      date: '2023-10-15',
-      status: 'Delivered',
-      total: 1250.00,
-      items: [
-        { name: 'Organic Potatoes', quantity: 5, price: 150.00 },
-        { name: 'Fresh Tomatoes', quantity: 2, price: 200.00 },
-        { name: 'Basmati Rice', quantity: 1, price: 900.00 },
-      ]
-    },
-    {
-      id: 'ORD-12346',
-      date: '2023-09-28',
-      status: 'Processing',
-      total: 850.00,
-      items: [
-        { name: 'Wheat Flour', quantity: 2, price: 450.00 },
-        { name: 'Farm Eggs', quantity: 2, price: 400.00 }
-      ]
-    }
-  ];
-
-  if (!user) {
-    return (
-      <div className="container mx-auto py-16 px-4">
-        <Card>
-          <CardHeader>
-            <CardTitle>Access Required</CardTitle>
-            <CardDescription>You need to be logged in to access your profile.</CardDescription>
-          </CardHeader>
-          <CardContent className="flex flex-col items-center gap-4">
-            <UserIcon className="h-16 w-16 text-muted-foreground opacity-50" />
-            <p className="text-center text-muted-foreground">
-              Please sign in to view and manage your profile.
-            </p>
-            <div className="flex gap-4">
-              <Button onClick={() => navigate('/')}>
-                Return Home
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  const handleSaveProfile = () => {
-    setIsEditing(false);
-    toast.success('Profile updated successfully');
-    // In a real app, save changes to the database here
-  };
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setProfile(prev => ({ ...prev, [name]: value }));
-  };
-
   return (
-    <div className="min-h-screen bg-background">
+    <div className="flex flex-col min-h-screen">
       <Navbar />
-      
-      <div className="container mx-auto px-4 py-8">
-        <Button 
-          variant="ghost" 
-          onClick={() => navigate(-1)} 
-          className="mb-6"
-        >
-          <ArrowLeft className="mr-2 h-4 w-4" /> Back
-        </Button>
-
-        <div className="flex flex-col gap-6">
-          <Card className="mb-6">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle className="text-2xl">{user.role === 'consumer' ? 'My Profile' : 'Farmer Profile'}</CardTitle>
-                  <CardDescription>Manage your personal information and preferences</CardDescription>
-                </div>
-                {!isEditing ? (
-                  <Button 
-                    variant="outline" 
-                    onClick={() => setIsEditing(true)} 
-                    size="sm"
-                  >
-                    <Edit className="mr-2 h-4 w-4" /> Edit Profile
-                  </Button>
-                ) : (
-                  <Button 
-                    onClick={handleSaveProfile} 
-                    size="sm"
-                    className="bg-farm-green hover:bg-farm-green/90"
-                  >
-                    <Save className="mr-2 h-4 w-4" /> Save Changes
-                  </Button>
-                )}
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-col md:flex-row gap-8 items-start">
-                <div className="flex flex-col items-center gap-3">
-                  <Avatar className="h-24 w-24">
-                    <AvatarImage src={profile.profileImage} />
-                    <AvatarFallback>{profile.username.substring(0, 2).toUpperCase()}</AvatarFallback>
-                  </Avatar>
-                  {isEditing && (
-                    <Button variant="outline" size="sm">
-                      <FileImage className="mr-2 h-4 w-4" /> Change Photo
+      <div className="flex-grow">
+        <div className="container relative pb-6">
+          <div className="mx-auto w-full max-w-screen-xl space-y-8 p-4 md:p-8 lg:p-12">
+            <Card className="w-full">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-2xl font-semibold">My Account</CardTitle>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="ml-auto h-8 w-32">
+                      Actions
+                      <ChevronDown className="ml-2.5 h-4 w-4" />
                     </Button>
-                  )}
-                  <div className="text-center mt-2">
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-farm-green/10 text-farm-green">
-                      {user.role === 'farmer' ? 'Farmer' : 'Consumer'}
-                    </span>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-[200px]">
+                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                    <DropdownMenuItem>
+                      <Settings className="mr-2 h-4 w-4" />
+                      <span>Settings</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem>
+                      <FileText className="mr-2 h-4 w-4" />
+                      <span>View invoices</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </CardHeader>
+              <CardContent>
+                <div className="grid gap-6">
+                  <div className="flex items-center space-x-4">
+                    <Avatar className="h-12 w-12">
+                      <AvatarImage src="/avatars/01.png" alt="Image" />
+                      <AvatarFallback>AK</AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <p className="text-sm font-medium leading-none">Aron Kennedy</p>
+                      <p className="text-sm text-muted-foreground">aron.kennedy@example.com</p>
+                    </div>
                   </div>
-                </div>
-
-                <div className="flex-1 space-y-4">
+                  <div className="space-y-2">
+                    <h2 className="text-lg font-medium tracking-tight">Profile Information</h2>
+                    <p className="text-sm text-muted-foreground">
+                      Here you can update your profile information.
+                    </p>
+                  </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="username">Full Name</Label>
-                      {isEditing ? (
-                        <Input 
-                          id="username" 
-                          name="username" 
-                          value={profile.username}
-                          onChange={handleInputChange}
-                        />
-                      ) : (
-                        <p className="text-sm">{profile.username}</p>
-                      )}
+                      <Label htmlFor="name">Name</Label>
+                      <Input id="name" defaultValue="Aron Kennedy" />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="email">Email</Label>
-                      {isEditing ? (
-                        <Input 
-                          id="email" 
-                          name="email" 
-                          value={profile.email}
-                          onChange={handleInputChange}
-                          type="email"
-                        />
-                      ) : (
-                        <div className="flex items-center gap-2">
-                          <Mail className="h-4 w-4 text-muted-foreground" />
-                          <p className="text-sm">{profile.email}</p>
-                        </div>
-                      )}
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="phone">Phone Number</Label>
-                      {isEditing ? (
-                        <Input 
-                          id="phone" 
-                          name="phone" 
-                          value={profile.phone}
-                          onChange={handleInputChange}
-                          type="tel"
-                        />
-                      ) : (
-                        <div className="flex items-center gap-2">
-                          <Phone className="h-4 w-4 text-muted-foreground" />
-                          <p className="text-sm">{profile.phone}</p>
-                        </div>
-                      )}
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="address">Address</Label>
-                      {isEditing ? (
-                        <Input 
-                          id="address" 
-                          name="address" 
-                          value={profile.address}
-                          onChange={handleInputChange}
-                        />
-                      ) : (
-                        <div className="flex items-center gap-2">
-                          <MapPin className="h-4 w-4 text-muted-foreground" />
-                          <p className="text-sm">{profile.address}</p>
-                        </div>
-                      )}
+                      <Input id="email" type="email" defaultValue="aron.kennedy@example.com" />
                     </div>
                   </div>
-
                   <div className="space-y-2">
                     <Label htmlFor="bio">Bio</Label>
-                    {isEditing ? (
-                      <textarea 
-                        id="bio" 
-                        name="bio" 
-                        value={profile.bio}
-                        onChange={handleInputChange}
-                        className="w-full min-h-[100px] rounded-md border border-input bg-background px-3 py-2 text-sm"
-                      />
-                    ) : (
-                      <p className="text-sm">{profile.bio}</p>
-                    )}
+                    <Textarea id="bio" defaultValue="I'm a software engineer based in New York City." />
                   </div>
+                  <Button>Update Profile</Button>
                 </div>
-              </div>
-            </CardContent>
-            <CardFooter className="flex justify-end pt-0">
-              {user.role === 'consumer' ? (
-                <Button variant="destructive" onClick={logout}>Sign Out</Button>
-              ) : (
-                <Button 
-                  className="bg-farm-green hover:bg-farm-green/90"
-                  onClick={() => navigate('/farmer')}
-                >
-                  Go to Dashboard
-                </Button>
-              )}
-            </CardFooter>
-          </Card>
-
-          {user.role === 'consumer' && (
-            <Tabs defaultValue="orders" className="w-full">
-              <TabsList className="grid w-full md:w-[400px] grid-cols-2">
-                <TabsTrigger value="orders">Order History</TabsTrigger>
-                <TabsTrigger value="saved">Saved Items</TabsTrigger>
-              </TabsList>
-              <TabsContent value="orders">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Order History</CardTitle>
-                    <CardDescription>
-                      View the status of recent orders and purchase history
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-8">
-                      {orders.map(order => (
-                        <Card key={order.id} className="overflow-hidden border-muted">
-                          <div className="bg-muted p-4">
-                            <div className="flex flex-wrap justify-between items-center gap-2">
-                              <div>
-                                <p className="font-medium">{order.id}</p>
-                                <p className="text-sm text-muted-foreground">Ordered on {order.date}</p>
-                              </div>
-                              <div className="flex items-center gap-3">
-                                <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                                  order.status === 'Delivered' 
-                                    ? 'bg-green-100 text-green-800' 
-                                    : 'bg-yellow-100 text-yellow-800'
-                                }`}>
-                                  {order.status}
-                                </span>
-                                <Button variant="outline" size="sm">Track Order</Button>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="p-4">
-                            {order.items.map((item, index) => (
-                              <div key={index} className="flex justify-between py-2 border-b last:border-b-0 text-sm">
-                                <div className="flex gap-2">
-                                  <span>{item.quantity} ×</span>
-                                  <span>{item.name}</span>
-                                </div>
-                                <span>₹{item.price.toFixed(2)}</span>
-                              </div>
-                            ))}
-                            <div className="flex justify-between mt-4 font-medium">
-                              <span>Total</span>
-                              <span>₹{order.total.toFixed(2)}</span>
-                            </div>
-                          </div>
-                        </Card>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-              <TabsContent value="saved">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Saved Items</CardTitle>
-                    <CardDescription>
-                      Products and farmers you've saved
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground text-center py-6">
-                      You haven't saved any items yet. Browse the marketplace and click the heart icon to save items for later.
-                    </p>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-            </Tabs>
-          )}
+              </CardContent>
+            </Card>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <Card className="col-span-1 lg:col-span-2">
+                <CardHeader>
+                  <CardTitle>Recent Orders</CardTitle>
+                  <CardDescription>Here are your most recent orders.</CardDescription>
+                </CardHeader>
+                <CardContent className="p-0">
+                  <ScrollArea className="h-[300px] w-full overflow-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead className="w-[100px]">Invoice</TableHead>
+                          <TableHead>Status</TableHead>
+                          <TableHead>Date</TableHead>
+                          <TableHead className="text-right">Amount</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        <TableRow>
+                          <TableCell className="font-medium">INV20231009</TableCell>
+                          <TableCell>
+                            <Badge variant="secondary">Shipped</Badge>
+                          </TableCell>
+                          <TableCell>October 9, 2023</TableCell>
+                          <TableCell className="text-right">$199.00</TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell className="font-medium">INV20231002</TableCell>
+                          <TableCell>
+                            <Badge variant="secondary">Processing</Badge>
+                          </TableCell>
+                          <TableCell>October 2, 2023</TableCell>
+                          <TableCell className="text-right">$250.00</TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell className="font-medium">INV20230925</TableCell>
+                          <TableCell>
+                            <Badge variant="secondary">Shipped</Badge>
+                          </TableCell>
+                          <TableCell>September 25, 2023</TableCell>
+                          <TableCell className="text-right">$99.00</TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell className="font-medium">INV20230918</TableCell>
+                          <TableCell>
+                            <Badge variant="secondary">Delivered</Badge>
+                          </TableCell>
+                          <TableCell>September 18, 2023</TableCell>
+                          <TableCell className="text-right">$120.00</TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell className="font-medium">INV20230911</TableCell>
+                          <TableCell>
+                            <Badge variant="secondary">Shipped</Badge>
+                          </TableCell>
+                          <TableCell>September 11, 2023</TableCell>
+                          <TableCell className="text-right">$350.00</TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
+                  </ScrollArea>
+                </CardContent>
+              </Card>
+              <Card className="col-span-1 lg:col-span-1">
+                <CardHeader>
+                  <CardTitle>Overview</CardTitle>
+                  <CardDescription>Your account overview</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid gap-4">
+                    <ListItem
+                      icon={LayoutDashboard}
+                      label="Account"
+                      description="View your account settings"
+                    />
+                    <Separator />
+                    <ListItem
+                      icon={CalendarDays}
+                      label="Subscription"
+                      description="Manage your subscription"
+                    />
+                    <Separator />
+                    <ListItem
+                      icon={ListChecks}
+                      label="Billing"
+                      description="View your billing history"
+                    />
+                    <Separator />
+                    <ListItem
+                      icon={CheckCheck}
+                      label="Security"
+                      description="Update your password"
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+            <Card>
+              <CardHeader>
+                <CardTitle>Settings</CardTitle>
+                <CardDescription>
+                  Here you can manage your account settings.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Accordion type="single" collapsible>
+                  <AccordionItem value="item-1">
+                    <AccordionTrigger>Personal Information</AccordionTrigger>
+                    <AccordionContent>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="name">Name</Label>
+                          <Input id="name" defaultValue="Aron Kennedy" />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="email">Email</Label>
+                          <Input id="email" type="email" defaultValue="aron.kennedy@example.com" />
+                        </div>
+                      </div>
+                      <div className="space-y-2 mt-4">
+                        <Label htmlFor="bio">Bio</Label>
+                        <Textarea id="bio" defaultValue="I'm a software engineer based in New York City." />
+                      </div>
+                      <Button className="mt-4">Update Profile</Button>
+                    </AccordionContent>
+                  </AccordionItem>
+                  <AccordionItem value="item-2">
+                    <AccordionTrigger>Password</AccordionTrigger>
+                    <AccordionContent>
+                      <div className="space-y-2">
+                        <Label htmlFor="password">Password</Label>
+                        <Input id="password" type="password" />
+                      </div>
+                      <div className="space-y-2 mt-4">
+                        <Label htmlFor="confirm-password">Confirm Password</Label>
+                        <Input id="confirm-password" type="password" />
+                      </div>
+                      <Button className="mt-4">Update Password</Button>
+                    </AccordionContent>
+                  </AccordionItem>
+                  <AccordionItem value="item-3">
+                    <AccordionTrigger>Notifications</AccordionTrigger>
+                    <AccordionContent>
+                      <div className="space-y-2">
+                        <Label htmlFor="email-notifications">Email Notifications</Label>
+                        <Input id="email-notifications" type="checkbox" />
+                      </div>
+                      <div className="space-y-2 mt-4">
+                        <Label htmlFor="push-notifications">Push Notifications</Label>
+                        <Input id="push-notifications" type="checkbox" />
+                      </div>
+                      <Button className="mt-4">Update Notifications</Button>
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };
