@@ -1,175 +1,236 @@
 
-import { Link } from "react-router-dom";
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Search, ShoppingCart, Menu, X, User } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { useAuth } from '@/context/AuthContext';
+import UserAuth from '@/components/UserAuth';
+import CartDropdown from '@/components/CartDropdown';
+import WishlistDropdown from '@/components/WishlistDropdown';
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from '@/components/ui/navigation-menu';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from '@/components/ui/dropdown-menu';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { User, Menu, LogOut, Home, ShoppingBag, Gavel, Users, ChevronDown } from 'lucide-react';
 
 const Navbar = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // Temporary, will use auth context
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
+  const [showAuthDialog, setShowAuthDialog] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const navigationLinks = [
+    { name: 'Home', path: '/' },
+    { name: 'Marketplace', path: '/marketplace' },
+    { name: 'Auctions', path: '/auctions' },
+    { name: 'Farmers', path: '/farmers' },
+  ];
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur">
-      <div className="container flex h-16 items-center justify-between">
+    <header className="sticky top-0 z-40 border-b bg-background">
+      <div className="container mx-auto px-4 flex h-16 items-center justify-between">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-farm-green overflow-hidden flex items-center justify-center">
-            <span className="text-white font-bold text-lg">F</span>
-          </div>
-          <span className="font-semibold text-xl hidden sm:block">FarmMarket</span>
+        <Link to="/" className="flex items-center space-x-2">
+          <span className="text-xl font-bold text-farm-green">
+            FarmMarket
+          </span>
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-6">
-          <Link to="/" className="text-sm font-medium hover:text-farm-green transition-colors">
-            Home
-          </Link>
-          <Link to="/marketplace" className="text-sm font-medium hover:text-farm-green transition-colors">
-            Marketplace
-          </Link>
-          <Link to="/auctions" className="text-sm font-medium hover:text-farm-green transition-colors">
-            Auctions
-          </Link>
-          <Link to="/farmers" className="text-sm font-medium hover:text-farm-green transition-colors">
-            Farmers
-          </Link>
-        </nav>
+        <div className="hidden md:flex gap-6">
+          <NavigationMenu>
+            <NavigationMenuList>
+              <NavigationMenuItem>
+                <Link to="/">
+                  <NavigationMenuLink className={cn(
+                    "group inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors",
+                    "hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50"
+                  )}>
+                    <Home className="mr-2 h-4 w-4" />
+                    Home
+                  </NavigationMenuLink>
+                </Link>
+              </NavigationMenuItem>
 
-        {/* Search Bar - Desktop */}
-        <div className="hidden md:flex items-center relative max-w-xs w-full">
-          <Input
-            type="text"
-            placeholder="Search for produce..."
-            className="pl-10 pr-4 py-2 rounded-full border-farm-brown/20"
-          />
-          <Search size={18} className="absolute left-3 text-muted-foreground" />
+              <NavigationMenuItem>
+                <Link to="/marketplace">
+                  <NavigationMenuLink className={cn(
+                    "group inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors",
+                    "hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50"
+                  )}>
+                    <ShoppingBag className="mr-2 h-4 w-4" />
+                    Marketplace
+                  </NavigationMenuLink>
+                </Link>
+              </NavigationMenuItem>
+
+              <NavigationMenuItem>
+                <Link to="/auctions">
+                  <NavigationMenuLink className={cn(
+                    "group inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors",
+                    "hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50"
+                  )}>
+                    <Gavel className="mr-2 h-4 w-4" />
+                    Auctions
+                  </NavigationMenuLink>
+                </Link>
+              </NavigationMenuItem>
+
+              <NavigationMenuItem>
+                <Link to="/farmers">
+                  <NavigationMenuLink className={cn(
+                    "group inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors",
+                    "hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50"
+                  )}>
+                    <Users className="mr-2 h-4 w-4" />
+                    Farmers
+                  </NavigationMenuLink>
+                </Link>
+              </NavigationMenuItem>
+            </NavigationMenuList>
+          </NavigationMenu>
         </div>
 
-        {/* User Actions */}
-        <div className="flex items-center gap-4">
-          {/* Search Icon (Mobile) */}
-          <Button variant="ghost" size="icon" className="md:hidden">
-            <Search size={20} />
-          </Button>
+        {/* Right-side Actions */}
+        <div className="flex items-center gap-2">
+          <WishlistDropdown />
+          <CartDropdown />
 
-          {/* Shopping Cart */}
-          <Button variant="ghost" size="icon" className="relative">
-            <ShoppingCart size={20} />
-            <span className="absolute -top-1 -right-1 bg-farm-accent-red text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-              0
-            </span>
-          </Button>
-
-          {/* User Menu */}
-          {isLoggedIn ? (
+          {/* User Profile */}
+          {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="rounded-full">
-                  <User size={20} />
+                <Button variant="ghost" className="relative h-9 w-9 rounded-full">
+                  <Avatar className="h-9 w-9">
+                    <AvatarImage src={user.profileImage} alt={user.username} />
+                    <AvatarFallback>{user.username.slice(0, 2).toUpperCase()}</AvatarFallback>
+                  </Avatar>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuItem asChild>
-                  <Link to="/profile">Profile</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to="/dashboard">Dashboard</Link>
-                </DropdownMenuItem>
+              <DropdownMenuContent className="w-56" align="end" forceMount>
+                <DropdownMenuLabel>
+                  <div className="flex flex-col space-y-1">
+                    <p className="text-sm font-medium leading-none">{user.username}</p>
+                    <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
+                  </div>
+                </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => setIsLoggedIn(false)}>
-                  Log out
+                {user.role === 'farmer' && (
+                  <DropdownMenuItem onClick={() => navigate('/farmer')}>
+                    Farmer Dashboard
+                  </DropdownMenuItem>
+                )}
+                <DropdownMenuItem onClick={() => navigate('/profile')}>
+                  My Profile
+                </DropdownMenuItem>
+                {user.role === 'consumer' && (
+                  <>
+                    <DropdownMenuItem onClick={() => navigate('/checkout')}>
+                      Checkout
+                    </DropdownMenuItem>
+                  </>
+                )}
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={logout}>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Log out</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <div className="hidden md:flex gap-2">
-              <Button 
-                variant="outline" 
-                onClick={() => setIsLoggedIn(true)}
-                className="border-farm-green text-farm-green hover:bg-farm-green/5"
-              >
-                Sign in
-              </Button>
-              <Button 
-                variant="default" 
-                className="bg-farm-green hover:bg-farm-green-dark"
-                onClick={() => setIsLoggedIn(true)}
-              >
-                Join Now
-              </Button>
-            </div>
+            <Button 
+              variant="default" 
+              onClick={() => setShowAuthDialog(true)}
+              className="bg-farm-green hover:bg-farm-green/90"
+            >
+              <User className="mr-2 h-4 w-4" />
+              Sign In
+            </Button>
           )}
 
           {/* Mobile Menu Button */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="md:hidden"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
-            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </Button>
+          <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" className="md:hidden">
+                <Menu className="h-5 w-5" />
+                <span className="sr-only">Toggle menu</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left">
+              <div className="py-4 grid gap-4">
+                <Link 
+                  to="/" 
+                  className="flex items-center gap-2 text-lg font-semibold"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <span className="text-farm-green">FarmMarket</span>
+                </Link>
+                <nav className="grid gap-2">
+                  {navigationLinks.map((link) => (
+                    <Link
+                      key={link.name}
+                      to={link.path}
+                      className="flex items-center gap-2 px-3 py-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-md"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      {link.name}
+                    </Link>
+                  ))}
+                </nav>
+                {user && (
+                  <>
+                    <div className="text-sm font-medium pt-2">Profile</div>
+                    {user.role === 'farmer' && (
+                      <Link
+                        to="/farmer"
+                        className="flex items-center gap-2 px-3 py-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-md"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        Farmer Dashboard
+                      </Link>
+                    )}
+                    <Link
+                      to="/profile"
+                      className="flex items-center gap-2 px-3 py-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-md"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      My Profile
+                    </Link>
+                    <Button 
+                      variant="outline" 
+                      onClick={() => {
+                        logout();
+                        setMobileMenuOpen(false);
+                      }}
+                      className="mt-2"
+                    >
+                      <LogOut className="mr-2 h-4 w-4" />
+                      Log out
+                    </Button>
+                  </>
+                )}
+              </div>
+            </SheetContent>
+          </Sheet>
         </div>
       </div>
 
-      {/* Mobile Menu */}
-      {isMenuOpen && (
-        <div className="md:hidden border-t p-4 bg-background">
-          {/* Mobile Search */}
-          <div className="relative mb-4">
-            <Input
-              type="text"
-              placeholder="Search for produce..."
-              className="pl-10 pr-4 py-2 w-full rounded-full"
-            />
-            <Search size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
-          </div>
-          
-          {/* Mobile Navigation */}
-          <nav className="flex flex-col space-y-4">
-            <Link to="/" className="text-base font-medium hover:text-farm-green transition-colors">
-              Home
-            </Link>
-            <Link to="/marketplace" className="text-base font-medium hover:text-farm-green transition-colors">
-              Marketplace
-            </Link>
-            <Link to="/auctions" className="text-base font-medium hover:text-farm-green transition-colors">
-              Auctions
-            </Link>
-            <Link to="/farmers" className="text-base font-medium hover:text-farm-green transition-colors">
-              Farmers
-            </Link>
-
-            {/* Mobile Auth Buttons */}
-            {!isLoggedIn && (
-              <div className="flex flex-col gap-2 pt-2">
-                <Button 
-                  variant="outline" 
-                  onClick={() => setIsLoggedIn(true)}
-                  className="border-farm-green text-farm-green hover:bg-farm-green/5"
-                >
-                  Sign in
-                </Button>
-                <Button 
-                  variant="default" 
-                  onClick={() => setIsLoggedIn(true)}
-                  className="bg-farm-green hover:bg-farm-green-dark"
-                >
-                  Join Now
-                </Button>
-              </div>
-            )}
-          </nav>
-        </div>
-      )}
+      {/* Auth Dialog */}
+      <UserAuth isOpen={showAuthDialog} onClose={() => setShowAuthDialog(false)} />
     </header>
   );
 };

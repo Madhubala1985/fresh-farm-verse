@@ -107,11 +107,11 @@ const FarmerReviews = ({ farmerId, farmerName }: FarmerReviewsProps) => {
     return new Date(dateString).toLocaleDateString('en-IN', options);
   };
 
-  const getAverageRating = () => {
+  const getAverageRating = (): number => {
     if (reviews.length === 0) return 0;
     
     const sum = reviews.reduce((total, review) => total + review.rating, 0);
-    return (sum / reviews.length).toFixed(1);
+    return parseFloat((sum / reviews.length).toFixed(1));
   };
 
   const getRatingText = (rating: number) => {
@@ -134,16 +134,16 @@ const FarmerReviews = ({ farmerId, farmerName }: FarmerReviewsProps) => {
                   <Star
                     key={star}
                     className={`h-4 w-4 ${
-                      star <= Math.floor(parseFloat(getAverageRating().toString()))
+                      star <= Math.floor(getAverageRating())
                         ? 'text-yellow-500 fill-yellow-500'
-                        : star <= parseFloat(getAverageRating().toString()) + 0.5
+                        : star <= getAverageRating() + 0.5
                         ? 'text-yellow-500 fill-yellow-500'
                         : 'text-gray-300'
                     }`}
                   />
                 ))}
                 <span className="ml-2 text-sm text-muted-foreground">
-                  {getRatingText(parseFloat(getAverageRating().toString()))}
+                  {getRatingText(getAverageRating())}
                 </span>
               </div>
               <p className="text-sm text-muted-foreground mt-1">

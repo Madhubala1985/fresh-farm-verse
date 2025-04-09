@@ -1,5 +1,5 @@
 
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useState, ReactNode, useEffect } from "react";
 import { User, AuthContextType } from "@/types";
 import { toast } from "sonner";
 
@@ -30,6 +30,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Check for existing user session on mount
+  useEffect(() => {
+    const storedUser = localStorage.getItem("farmmarket_user");
+    if (storedUser) {
+      try {
+        const parsedUser = JSON.parse(storedUser);
+        setUser(parsedUser);
+      } catch (err) {
+        console.error("Failed to parse stored user:", err);
+        localStorage.removeItem("farmmarket_user");
+      }
+    }
+  }, []);
 
   // Mock login function
   const login = async (email: string, password: string) => {

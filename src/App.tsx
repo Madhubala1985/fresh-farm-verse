@@ -6,7 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/context/AuthContext";
 import { CartProvider } from "@/context/CartContext";
-import { WishlistProvider } from "@/context/WishlistContext";
+import { WishlistProvider } from "@/context/WishlistProvider";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import ProductDetail from "./pages/ProductDetail";
@@ -16,6 +16,9 @@ import FarmerProfile from "./pages/FarmerProfile";
 import Auctions from "./pages/Auctions";
 import Farmers from "./pages/Farmers";
 import FarmerPublicProfile from "./pages/FarmerPublicProfile";
+import UserProfile from "./pages/UserProfile";
+import Checkout from "./pages/Checkout";
+import CheckoutSuccess from "./pages/CheckoutSuccess";
 
 const queryClient = new QueryClient();
 
@@ -37,6 +40,9 @@ const App = () => (
                 <Route path="/farmers" element={<Farmers />} />
                 <Route path="/farmer/:farmerId" element={<FarmerPublicProfile />} />
                 <Route path="/auctions" element={<Auctions />} />
+                <Route path="/profile" element={<UserProfile />} />
+                <Route path="/checkout" element={<Checkout />} />
+                <Route path="/checkout/success" element={<CheckoutSuccess />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
