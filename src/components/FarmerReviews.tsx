@@ -134,16 +134,16 @@ const FarmerReviews = ({ farmerId, farmerName }: FarmerReviewsProps) => {
                   <Star
                     key={star}
                     className={`h-4 w-4 ${
-                      star <= Math.floor(parseFloat(getAverageRating()))
+                      star <= Math.floor(parseFloat(getAverageRating().toString()))
                         ? 'text-yellow-500 fill-yellow-500'
-                        : star <= parseFloat(getAverageRating()) + 0.5
+                        : star <= parseFloat(getAverageRating().toString()) + 0.5
                         ? 'text-yellow-500 fill-yellow-500'
                         : 'text-gray-300'
                     }`}
                   />
                 ))}
                 <span className="ml-2 text-sm text-muted-foreground">
-                  {getRatingText(parseFloat(getAverageRating()))}
+                  {getRatingText(parseFloat(getAverageRating().toString()))}
                 </span>
               </div>
               <p className="text-sm text-muted-foreground mt-1">
