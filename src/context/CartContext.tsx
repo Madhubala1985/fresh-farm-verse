@@ -26,8 +26,8 @@ type CartContextType = {
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
   cartCount: number;
-  cart: CartItem[]; // This is now correctly defined as CartItem[]
-  getTotal: () => number;
+  cart: CartItem[]; // Add this property
+  getTotal: () => number; // Add this method
 };
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -168,8 +168,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     updateQuantity,
     clearCart,
     cartCount,
-    cart: state.items,
-    getTotal,
+    cart: state.items, // Add this property
+    getTotal, // Add this method
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
