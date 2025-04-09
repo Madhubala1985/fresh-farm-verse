@@ -9,10 +9,6 @@ export interface User {
   bio?: string;
   location?: string;
   uid?: string;
-  state?: string;
-  district?: string;
-  pincode?: string;
-  phone?: string;
 }
 
 export interface Product {

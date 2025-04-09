@@ -33,39 +33,11 @@ const UserProfile: React.FC = () => {
                   <p className="text-sm font-medium">Role</p>
                   <p className="text-sm text-muted-foreground capitalize">{user?.role || 'Not provided'}</p>
                 </div>
-                <div>
-                  <p className="text-sm font-medium">Location</p>
-                  <p className="text-sm text-muted-foreground">{user?.location || 'Not provided'}</p>
-                </div>
-                {user?.state && (
-                  <div>
-                    <p className="text-sm font-medium">State</p>
-                    <p className="text-sm text-muted-foreground">{user.state}</p>
-                  </div>
-                )}
-                {user?.district && (
-                  <div>
-                    <p className="text-sm font-medium">District</p>
-                    <p className="text-sm text-muted-foreground">{user.district}</p>
-                  </div>
-                )}
-                {user?.pincode && (
-                  <div>
-                    <p className="text-sm font-medium">PIN Code</p>
-                    <p className="text-sm text-muted-foreground">{user.pincode}</p>
-                  </div>
-                )}
-                {user?.phone && (
-                  <div>
-                    <p className="text-sm font-medium">Phone</p>
-                    <p className="text-sm text-muted-foreground">{user.phone}</p>
-                  </div>
-                )}
               </div>
             </CardContent>
             <CardFooter>
               <p className="text-sm text-muted-foreground">
-                Account created on April 9, 2025
+                Account created on April 1, 2025
               </p>
             </CardFooter>
           </Card>

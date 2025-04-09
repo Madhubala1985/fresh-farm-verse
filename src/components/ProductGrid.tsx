@@ -18,17 +18,17 @@ const ProductGrid: React.FC<ProductGridProps> = ({ products, loading, error, far
   const mockProducts: Product[] = [
     {
       id: '1',
-      name: 'Organic Basmati Rice',
-      description: 'Premium quality organic basmati rice from North India',
-      price: 150,
-      image: 'https://images.unsplash.com/photo-1550367083-9fa5411cb8a1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80',
-      category: 'Grains',
+      name: 'Organic Tomatoes',
+      description: 'Fresh, locally grown organic tomatoes',
+      price: 3.99,
+      image: 'https://images.unsplash.com/photo-1592924357229-c5bacb6a0f70?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80',
+      category: 'Vegetables',
       farmerId: '1',
-      farmerName: 'Green Harvest Farms',
+      farmerName: 'Green Valley Farm',
       organic: true,
       seasonal: true,
       stock: 50,
-      unit: 'kg',
+      unit: 'lb',
       createdAt: new Date().toISOString()
     },
     // ... more products
