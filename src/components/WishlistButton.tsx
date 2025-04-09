@@ -2,7 +2,7 @@
 import React from 'react';
 import { Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useWishlist } from '@/context/WishlistContext';
+import { useWishlist } from '@/context/WishlistProvider';
 import { Product } from '@/types';
 import { cn } from '@/lib/utils';
 

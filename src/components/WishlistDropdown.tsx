@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { useWishlist } from '@/context/WishlistContext';
+import { useWishlist } from '@/context/WishlistProvider';
 import { useCart } from '@/context/CartContext';
 import { Button } from '@/components/ui/button';
 import {
