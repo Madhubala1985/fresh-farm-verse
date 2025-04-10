@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { useWishlist } from '@/context/WishlistProvider';
 import { Product } from '@/types';
 import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
 
 interface WishlistButtonProps {
   product: Product;
@@ -23,8 +24,10 @@ const WishlistButton = ({ product, variant = 'default', className }: WishlistBut
     
     if (isWishlisted) {
       removeFromWishlist(product.id);
+      toast.success(`${product.name} removed from your wishlist`);
     } else {
       addToWishlist(product);
+      toast.success(`${product.name} added to your wishlist`);
     }
   };
   
@@ -33,8 +36,9 @@ const WishlistButton = ({ product, variant = 'default', className }: WishlistBut
       <Button
         variant="ghost"
         size="icon"
-        className={cn("rounded-full", className)}
+        className={cn("rounded-full hover:bg-background/80 absolute top-2 right-2 z-10 bg-white/70 backdrop-blur-sm shadow-sm transition-all", className)}
         onClick={toggleWishlist}
+        aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
       >
         <Heart 
           className={cn(

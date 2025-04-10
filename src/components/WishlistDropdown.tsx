@@ -14,6 +14,7 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Link } from 'react-router-dom';
 import { Heart, ShoppingBag, Trash2, X } from 'lucide-react';
+import { toast } from 'sonner';
 
 const WishlistDropdown = () => {
   const { wishlist, removeFromWishlist, clearWishlist } = useWishlist();
@@ -31,6 +32,14 @@ const WishlistDropdown = () => {
     if (product) {
       addItem(product);
       removeFromWishlist(productId);
+      toast.success(`${product.name} added to your cart`);
+    }
+  };
+  
+  const handleClearWishlist = () => {
+    if (wishlist.length > 0) {
+      clearWishlist();
+      toast.info('Wishlist cleared');
     }
   };
 
@@ -91,8 +100,9 @@ const WishlistDropdown = () => {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-7 w-7"
+                        className="h-7 w-7 text-red-500 hover:text-red-600 hover:bg-red-50"
                         onClick={() => removeFromWishlist(product.id)}
+                        title="Remove from wishlist"
                       >
                         <X className="h-4 w-4" />
                       </Button>
@@ -100,8 +110,9 @@ const WishlistDropdown = () => {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-7 w-7"
+                        className="h-7 w-7 text-farm-green hover:text-farm-green/80 hover:bg-farm-green/10"
                         onClick={() => moveToCart(product.id)}
+                        title="Add to cart"
                       >
                         <ShoppingBag className="h-4 w-4" />
                       </Button>
@@ -115,7 +126,8 @@ const WishlistDropdown = () => {
               <Button 
                 variant="ghost" 
                 className="text-muted-foreground"
-                onClick={clearWishlist}
+                onClick={handleClearWishlist}
+                disabled={wishlist.length === 0}
               >
                 <Trash2 className="h-4 w-4 mr-2" />
                 Clear All

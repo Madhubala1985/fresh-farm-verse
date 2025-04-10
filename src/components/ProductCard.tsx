@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Clock, Leaf } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
+import WishlistButton from './WishlistButton';
 
 interface ProductCardProps {
   product: Product;
@@ -33,6 +34,9 @@ const ProductCard = ({ product }: ProductCardProps) => {
           alt={product.name}
           className="aspect-square w-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
+        
+        {/* Wishlist Button */}
+        <WishlistButton product={product} variant="icon" />
         
         {/* Badges */}
         <div className="absolute top-2 left-2 flex flex-wrap gap-1">

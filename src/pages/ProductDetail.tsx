@@ -4,24 +4,21 @@ import { useParams } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Heart, ShoppingBag, Truck } from "lucide-react";
+import { ShoppingBag, Truck } from "lucide-react";
 import { useCart } from '@/context/CartContext';
-import { useWishlist } from '@/context/WishlistProvider';
 import { Product } from '@/types';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import WishlistButton from '@/components/WishlistButton';
 
 const ProductDetail = () => {
   const { productId } = useParams<{ productId: string }>();
   const { addItem } = useCart();
-  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
   
   const [product, setProduct] = useState<Product | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
-  const isWishlisted = product ? isInWishlist(product.id) : false;
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -71,16 +68,6 @@ const ProductDetail = () => {
       addItem(product, quantity);
     }
   };
-  
-  const toggleWishlist = () => {
-    if (product) {
-      if (isWishlisted) {
-        removeFromWishlist(product.id);
-      } else {
-        addToWishlist(product);
-      }
-    }
-  };
 
   if (loading) {
     return <div>Loading product details...</div>;
@@ -101,12 +88,15 @@ const ProductDetail = () => {
         <div className="container mx-auto px-4 py-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Product Image */}
-            <div>
+            <div className="relative">
               <img
                 src={product?.image}
                 alt={product?.name}
                 className="w-full h-auto rounded-lg shadow-md"
               />
+              <div className="absolute top-4 right-4">
+                <WishlistButton product={product} variant="icon" className="!relative !top-0 !right-0" />
+              </div>
             </div>
 
             {/* Product Details */}
@@ -148,8 +138,8 @@ const ProductDetail = () => {
               </div>
 
               {/* Quantity and Add to Cart */}
-              <div className="flex items-center mb-6">
-                <div className="flex items-center mr-4">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="flex items-center">
                   <Button
                     variant="outline"
                     size="icon"
@@ -181,7 +171,7 @@ const ProductDetail = () => {
                 </div>
 
                 <Button
-                  className="bg-green-500 text-white rounded-full hover:bg-green-600"
+                  className="bg-green-500 text-white rounded-full hover:bg-green-600 flex-1"
                   onClick={handleAddToCart}
                   disabled={product?.countInStock === 0}
                 >
@@ -191,23 +181,7 @@ const ProductDetail = () => {
               </div>
               
               {/* Wishlist Button */}
-              <Button
-                variant="outline"
-                className="w-full rounded-full flex items-center justify-center gap-2"
-                onClick={toggleWishlist}
-              >
-                {isWishlisted ? (
-                  <>
-                    <Heart className="h-4 w-4 fill-red-500 text-red-500" />
-                    Remove from Wishlist
-                  </>
-                ) : (
-                  <>
-                    <Heart className="h-4 w-4" />
-                    Add to Wishlist
-                  </>
-                )}
-              </Button>
+              <WishlistButton product={product} variant="outline" className="w-full" />
 
               {/* Farmer Info and Shipping */}
               <div className="mt-8">
