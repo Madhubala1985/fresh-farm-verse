@@ -10,6 +10,13 @@ import { useCart } from '@/context/CartContext';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 
+// Define typed comparison criteria
+type ComparisonCriterion<T extends keyof Product> = {
+  label: string;
+  key: T;
+  formatter?: (val: Product[T]) => string;
+};
+
 const Compare: React.FC = () => {
   const { comparisonList, removeFromComparison, clearComparison } = useComparison();
   const { addItem } = useCart();
@@ -45,14 +52,14 @@ const Compare: React.FC = () => {
     );
   }
 
-  // Feature comparison criteria
-  const comparisonCriteria = [
-    { label: "Price", key: "price" as const, formatter: (val: number) => formatPrice(val) },
-    { label: "Unit", key: "unit" as const },
-    { label: "Organic", key: "organic" as const, formatter: (val: boolean) => val ? "Yes" : "No" },
-    { label: "Seasonal", key: "seasonal" as const, formatter: (val: boolean) => val ? "Yes" : "No" },
-    { label: "Farmer", key: "farmerName" as const },
-    { label: "Category", key: "category" as const },
+  // Feature comparison criteria with proper typing
+  const comparisonCriteria: ComparisonCriterion<keyof Product>[] = [
+    { label: "Price", key: "price", formatter: (val: number) => formatPrice(val) },
+    { label: "Unit", key: "unit" },
+    { label: "Organic", key: "organic", formatter: (val: boolean) => val ? "Yes" : "No" },
+    { label: "Seasonal", key: "seasonal", formatter: (val: boolean) => val ? "Yes" : "No" },
+    { label: "Farmer", key: "farmerName" },
+    { label: "Category", key: "category" },
   ];
 
   return (
@@ -128,12 +135,12 @@ const Compare: React.FC = () => {
             <table className="w-full">
               <tbody>
                 {comparisonCriteria.map((criterion) => (
-                  <tr key={criterion.key} className="border-b last:border-0">
+                  <tr key={criterion.key.toString()} className="border-b last:border-0">
                     <td className="font-medium p-4 bg-muted/30">{criterion.label}</td>
                     {comparisonList.map((product) => {
                       const value = product[criterion.key];
                       const displayValue = criterion.formatter 
-                        ? criterion.formatter(value as any) 
+                        ? criterion.formatter(value as any)
                         : value;
                         
                       return (
