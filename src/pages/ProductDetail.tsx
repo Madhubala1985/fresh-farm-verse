@@ -10,6 +10,7 @@ import { Product } from '@/types';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import WishlistButton from '@/components/WishlistButton';
+import CompareButton from '@/components/CompareButton';
 
 const ProductDetail = () => {
   const { productId } = useParams<{ productId: string }>();
@@ -97,6 +98,9 @@ const ProductDetail = () => {
               <div className="absolute top-4 right-4">
                 <WishlistButton product={product} variant="icon" className="!relative !top-0 !right-0" />
               </div>
+              <div className="absolute top-4 left-4">
+                <CompareButton product={product} variant="icon" className="bg-white/70 backdrop-blur-sm shadow-sm !relative !top-0 !left-0" />
+              </div>
             </div>
 
             {/* Product Details */}
@@ -180,8 +184,11 @@ const ProductDetail = () => {
                 </Button>
               </div>
               
-              {/* Wishlist Button */}
-              <WishlistButton product={product} variant="outline" className="w-full" />
+              {/* Action Buttons */}
+              <div className="flex gap-2 mb-6">
+                <WishlistButton product={product} variant="outline" className="flex-1" />
+                <CompareButton product={product} variant="outline" className="flex-1" />
+              </div>
 
               {/* Farmer Info and Shipping */}
               <div className="mt-8">

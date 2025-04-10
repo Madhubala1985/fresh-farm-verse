@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Clock, Leaf } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import WishlistButton from './WishlistButton';
+import CompareButton from './CompareButton';
 
 interface ProductCardProps {
   product: Product;
@@ -38,8 +39,13 @@ const ProductCard = ({ product }: ProductCardProps) => {
         {/* Wishlist Button */}
         <WishlistButton product={product} variant="icon" />
         
+        {/* Compare Button */}
+        <div className="absolute top-2 left-2">
+          <CompareButton product={product} variant="icon" className="bg-white/70 backdrop-blur-sm shadow-sm" />
+        </div>
+        
         {/* Badges */}
-        <div className="absolute top-2 left-2 flex flex-wrap gap-1">
+        <div className="absolute bottom-2 left-2 flex flex-wrap gap-1">
           {product.organic && (
             <Badge className="bg-farm-green text-white font-medium flex items-center gap-1">
               <Leaf className="h-3 w-3" /> Organic
