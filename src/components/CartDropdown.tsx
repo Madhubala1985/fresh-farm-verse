@@ -15,10 +15,10 @@ import { Link } from 'react-router-dom';
 import { ShoppingCart, Trash2, X } from 'lucide-react';
 
 const CartDropdown = () => {
-  const { cart, removeItem, updateItemQuantity, clearCart } = useCart();
+  const { cart, removeItem, updateQuantity, clearCart } = useCart();
   
   const calculateSubtotal = () => {
-    return cart.reduce((total, item) => total + item.price * item.quantity, 0);
+    return cart.reduce((total, item) => total + item.product.price * item.quantity, 0);
   };
   
   const formatPrice = (price: number) => {
@@ -64,28 +64,28 @@ const CartDropdown = () => {
             <ScrollArea className="flex-1 my-4">
               <div className="space-y-4 pr-4">
                 {cart.map((item) => (
-                  <div key={item.id} className="flex items-center space-x-4 border-b pb-4">
+                  <div key={item.product.id} className="flex items-center space-x-4 border-b pb-4">
                     <div className="w-20 h-20 rounded-md overflow-hidden bg-muted">
                       <img 
-                        src={item.image} 
-                        alt={item.name} 
+                        src={item.product.image} 
+                        alt={item.product.name} 
                         className="w-full h-full object-cover"
                       />
                     </div>
                     
                     <div className="flex-1">
-                      <h4 className="font-medium">{item.name}</h4>
-                      <p className="text-sm text-muted-foreground">{formatPrice(item.price)} per {item.unit}</p>
+                      <h4 className="font-medium">{item.product.name}</h4>
+                      <p className="text-sm text-muted-foreground">{formatPrice(item.product.price)} per {item.product.unit}</p>
                       <div className="flex items-center mt-2">
                         <button 
-                          onClick={() => updateItemQuantity(item.id, Math.max(1, item.quantity - 1))}
+                          onClick={() => updateQuantity(item.product.id, Math.max(1, item.quantity - 1))}
                           className="w-6 h-6 flex items-center justify-center border rounded-full"
                         >
                           -
                         </button>
                         <span className="mx-2">{item.quantity}</span>
                         <button 
-                          onClick={() => updateItemQuantity(item.id, item.quantity + 1)}
+                          onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
                           className="w-6 h-6 flex items-center justify-center border rounded-full"
                         >
                           +
@@ -94,9 +94,9 @@ const CartDropdown = () => {
                     </div>
                     
                     <div className="text-right">
-                      <p className="font-medium">{formatPrice(item.price * item.quantity)}</p>
+                      <p className="font-medium">{formatPrice(item.product.price * item.quantity)}</p>
                       <button
-                        onClick={() => removeItem(item.id)}
+                        onClick={() => removeItem(item.product.id)}
                         className="text-red-500 mt-2"
                       >
                         <X className="h-4 w-4" />
