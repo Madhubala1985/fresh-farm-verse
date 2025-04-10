@@ -1,3 +1,4 @@
+
 import React from 'react';
 import ProductCard from './ProductCard';
 import { Product } from '@/types';
@@ -7,9 +8,12 @@ export interface ProductGridProps {
   loading?: boolean;
   error?: string | null;
   farmerId?: string;
+  title?: string;
+  showFilters?: boolean;
+  auctionsOnly?: boolean;
 }
 
-const ProductGrid: React.FC<ProductGridProps> = ({ products, loading, error, farmerId }) => {
+const ProductGrid: React.FC<ProductGridProps> = ({ products, loading, error, farmerId, title, showFilters, auctionsOnly }) => {
   // Mock products data - in a real app, this would come from props or an API call
   const mockProducts: Product[] = [
     {
@@ -37,6 +41,11 @@ const ProductGrid: React.FC<ProductGridProps> = ({ products, loading, error, far
     ? displayProducts.filter(p => p.farmerId === farmerId) 
     : displayProducts;
 
+  // If auctionsOnly is provided, filter products with auctions
+  const finalProducts = auctionsOnly
+    ? filteredProducts.filter(p => p.auction)
+    : filteredProducts;
+
   if (loading) {
     return <div className="text-center py-8">Loading products...</div>;
   }
@@ -45,15 +54,23 @@ const ProductGrid: React.FC<ProductGridProps> = ({ products, loading, error, far
     return <div className="text-center py-8 text-red-500">Error: {error}</div>;
   }
 
-  if (filteredProducts.length === 0) {
+  if (finalProducts.length === 0) {
     return <div className="text-center py-8">No products found.</div>;
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-      {filteredProducts.map((product) => (
-        <ProductCard key={product.id} product={product} />
-      ))}
+    <div>
+      {title && <h3 className="text-2xl font-semibold mb-4">{title}</h3>}
+      {showFilters && (
+        <div className="mb-6">
+          {/* Filters UI would go here */}
+        </div>
+      )}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {finalProducts.map((product) => (
+          <ProductCard key={product.id} product={product} />
+        ))}
+      </div>
     </div>
   );
 };
