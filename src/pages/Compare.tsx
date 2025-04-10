@@ -5,11 +5,17 @@ import Footer from '@/components/Footer';
 import { useComparison } from '@/context/ComparisonContext';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, ShoppingBag, Trash2 } from 'lucide-react';
+import { ArrowLeft, ExternalLink, ShoppingBag, Trash2 } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { Product } from '@/types';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableRow,
+} from "@/components/ui/table";
 
 // Define typed comparison criteria
 type ComparisonCriterion<T extends keyof Product> = {
@@ -63,6 +69,19 @@ const Compare: React.FC = () => {
     { label: "Category", key: "category" },
   ];
 
+  // Highlight the best price
+  const findBestPrice = () => {
+    if (comparisonList.length <= 1) return null;
+    
+    const lowestPriceId = comparisonList.reduce((lowest, current) => {
+      return current.price < lowest.price ? current : lowest;
+    }, comparisonList[0]).id;
+    
+    return lowestPriceId;
+  };
+  
+  const bestPriceProductId = findBestPrice();
+
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
@@ -79,6 +98,10 @@ const Compare: React.FC = () => {
             <Trash2 className="h-4 w-4 mr-1" /> Clear All
           </Button>
         </div>
+        
+        <p className="text-muted-foreground mb-6">
+          Comparing {comparisonList.length} {comparisonList.length === 1 ? 'product' : 'products'}. You can compare up to 4 products at a time.
+        </p>
         
         <div className="overflow-x-auto">
           <div className={cn(
@@ -114,6 +137,11 @@ const Compare: React.FC = () => {
                       <Badge className="bg-farm-accent-yellow text-black">Seasonal</Badge>
                     )}
                   </div>
+                  
+                  {/* Best price badge */}
+                  {bestPriceProductId === product.id && comparisonList.length > 1 && (
+                    <Badge className="absolute bottom-2 right-2 bg-green-500 text-white">Best Price</Badge>
+                  )}
                 </div>
                 
                 <h2 className="font-bold text-lg mb-2 text-center">{product.name}</h2>
@@ -121,39 +149,60 @@ const Compare: React.FC = () => {
                   {product.description}
                 </p>
                 
-                <Button 
-                  onClick={() => addItem(product)}
-                  className="w-full mb-6"
-                >
-                  <ShoppingBag className="h-4 w-4 mr-1" /> Add to Cart
-                </Button>
+                <div className="flex space-x-2 mb-6 w-full">
+                  <Button 
+                    onClick={() => addItem(product)}
+                    className="flex-1"
+                  >
+                    <ShoppingBag className="h-4 w-4 mr-1" /> Add to Cart
+                  </Button>
+                  
+                  <Button 
+                    variant="outline"
+                    asChild
+                    className="flex-shrink-0"
+                  >
+                    <Link to={`/product/${product.id}`}>
+                      <ExternalLink className="h-4 w-4" />
+                    </Link>
+                  </Button>
+                </div>
               </div>
             ))}
           </div>
           
           {/* Comparison Table */}
           <div className="border rounded-lg mt-8 overflow-hidden">
-            <table className="w-full">
-              <tbody>
+            <Table>
+              <TableBody>
                 {comparisonCriteria.map((criterion) => (
-                  <tr key={criterion.key.toString()} className="border-b last:border-0">
-                    <td className="font-medium p-4 bg-muted/30">{criterion.label}</td>
+                  <TableRow key={criterion.key.toString()}>
+                    <TableCell className="font-medium bg-muted/30 w-32">{criterion.label}</TableCell>
                     {comparisonList.map((product) => {
                       const value = product[criterion.key];
                       const displayValue = criterion.formatter 
                         ? criterion.formatter(value as any)
                         : value;
                         
+                      // Highlight best price cell
+                      const isBestPrice = criterion.key === 'price' && bestPriceProductId === product.id && comparisonList.length > 1;
+                        
                       return (
-                        <td key={product.id} className="p-4 text-center">
+                        <TableCell 
+                          key={product.id} 
+                          className={cn(
+                            "text-center",
+                            isBestPrice && "bg-green-50 font-bold text-green-700"
+                          )}
+                        >
                           {displayValue?.toString() || "N/A"}
-                        </td>
+                        </TableCell>
                       );
                     })}
-                  </tr>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         </div>
       </div>
