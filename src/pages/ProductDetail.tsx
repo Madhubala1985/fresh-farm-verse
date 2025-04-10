@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -29,20 +30,20 @@ const ProductDetail = () => {
         // Replace with your actual data fetching logic
         const mockProduct: Product = {
           id: productId || '1',
-          name: "Heirloom Tomatoes",
-          description: "Juicy, sun-ripened heirloom tomatoes bursting with flavor.",
+          name: "Organic Tomatoes",
+          description: "Fresh, locally grown organic tomatoes from Maharashtra farms. Perfect for salads and cooking.",
           image: "https://images.unsplash.com/photo-1600247454695-4c4a895b8199?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fHRvbWF0b3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60",
-          price: 4.99,
+          price: 80,
           category: "Vegetables",
           farmerId: "1",
-          farmerName: "Green Acres Farm",
+          farmerName: "Green Acres Farm, Nashik",
           organic: true,
           seasonal: true,
           stock: 10,
           unit: "kg",
           createdAt: new Date().toISOString(),
           rating: 4.5,
-          numReviews: 20,
+          numReviews: 28,
           countInStock: 10,
         };
         setProduct(mockProduct);
@@ -57,6 +58,13 @@ const ProductDetail = () => {
 
     fetchProduct();
   }, [productId]);
+
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: 'INR',
+    }).format(price);
+  };
 
   const handleAddToCart = () => {
     if (product) {
@@ -124,13 +132,15 @@ const ProductDetail = () => {
 
               <div className="mb-4">
                 <Badge variant="secondary">{product?.category}</Badge>
+                {product.organic && <Badge variant="outline" className="ml-2 bg-farm-green text-white">Organic</Badge>}
               </div>
 
               <p className="text-gray-700 mb-6">{product?.description}</p>
 
               <div className="flex items-center justify-between mb-6">
                 <span className="text-2xl font-bold text-green-600">
-                  ${product?.price.toFixed(2)}
+                  {formatPrice(product?.price)}
+                  <span className="text-sm font-normal ml-1">per {product?.unit}</span>
                 </span>
                 <span className="text-gray-500">
                   In Stock: {product?.countInStock}
@@ -208,7 +218,7 @@ const ProductDetail = () => {
                 <div className="mt-4 flex items-center">
                   <Truck className="mr-2 h-5 w-5 text-gray-500" />
                   <span className="text-gray-600">
-                    Free shipping on orders over $50
+                    Free shipping on orders over ₹1000
                   </span>
                 </div>
               </div>

@@ -14,6 +14,7 @@ import {
 import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { X, ShoppingCart, Minus, Plus, Trash2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const CartDropdown = () => {
   const { state, removeItem, updateQuantity, clearCart } = useCart();
@@ -144,9 +145,16 @@ const CartDropdown = () => {
                   <Trash2 className="h-4 w-4 mr-2" />
                   Clear Cart
                 </Button>
-                <Button className="flex-1 bg-farm-green hover:bg-farm-green-dark">
-                  Checkout
-                </Button>
+                <SheetClose asChild>
+                  <Button 
+                    className="flex-1 bg-farm-green hover:bg-farm-green-dark" 
+                    onClick={() => window.location.href = '/checkout'}
+                    as={Link}
+                    to="/checkout"
+                  >
+                    Checkout
+                  </Button>
+                </SheetClose>
               </div>
               
               <SheetFooter className="pb-2 pt-2">

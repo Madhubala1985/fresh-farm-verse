@@ -4,9 +4,12 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from '@/context/AuthContext';
+import { Badge } from '@/components/ui/badge';
+import { format } from 'date-fns';
 
 const UserProfile: React.FC = () => {
   const { user } = useAuth();
+  const joinDate = new Date('2025-04-01');
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -31,13 +34,17 @@ const UserProfile: React.FC = () => {
                 </div>
                 <div>
                   <p className="text-sm font-medium">Role</p>
-                  <p className="text-sm text-muted-foreground capitalize">{user?.role || 'Not provided'}</p>
+                  <Badge variant="outline" className="capitalize">{user?.role || 'Not provided'}</Badge>
+                </div>
+                <div>
+                  <p className="text-sm font-medium">Region</p>
+                  <p className="text-sm text-muted-foreground">India</p>
                 </div>
               </div>
             </CardContent>
             <CardFooter>
               <p className="text-sm text-muted-foreground">
-                Account created on April 1, 2025
+                Account created on {format(joinDate, 'MMMM d, yyyy')}
               </p>
             </CardFooter>
           </Card>

@@ -18,6 +18,7 @@ import {
 import { toast } from "@/components/ui/use-toast"
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 const Checkout = () => {
   const { cart, clearCart, getTotal } = useCart();
@@ -26,7 +27,8 @@ const Checkout = () => {
   const [address, setAddress] = useState('');
   const [city, setCity] = useState('');
   const [state, setState] = useState('');
-  const [zip, setZip] = useState('');
+  const [pincode, setPincode] = useState('');
+  const [mobile, setMobile] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('credit-card');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
@@ -103,13 +105,24 @@ const Checkout = () => {
                     />
                   </div>
                   <div className="grid gap-2">
-                    <Label htmlFor="address">Address</Label>
+                    <Label htmlFor="mobile">Mobile Number</Label>
+                    <Input
+                      type="tel"
+                      id="mobile"
+                      value={mobile}
+                      onChange={(e) => setMobile(e.target.value)}
+                      placeholder="+91 98765 43210"
+                      required
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="address">Complete Address</Label>
                     <Input
                       type="text"
                       id="address"
                       value={address}
                       onChange={(e) => setAddress(e.target.value)}
-                      placeholder="123 Main St"
+                      placeholder="Flat/House No., Building, Street"
                       required
                     />
                   </div>
@@ -121,7 +134,7 @@ const Checkout = () => {
                         id="city"
                         value={city}
                         onChange={(e) => setCity(e.target.value)}
-                        placeholder="New York"
+                        placeholder="Mumbai"
                         required
                       />
                     </div>
@@ -132,18 +145,18 @@ const Checkout = () => {
                         id="state"
                         value={state}
                         onChange={(e) => setState(e.target.value)}
-                        placeholder="NY"
+                        placeholder="Maharashtra"
                         required
                       />
                     </div>
                     <div className="grid gap-2">
-                      <Label htmlFor="zip">ZIP Code</Label>
+                      <Label htmlFor="pincode">PIN Code</Label>
                       <Input
                         type="text"
-                        id="zip"
-                        value={zip}
-                        onChange={(e) => setZip(e.target.value)}
-                        placeholder="10001"
+                        id="pincode"
+                        value={pincode}
+                        onChange={(e) => setPincode(e.target.value)}
+                        placeholder="400001"
                         required
                       />
                     </div>
@@ -157,30 +170,28 @@ const Checkout = () => {
                   <CardDescription>Choose your payment method.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-2">
+                  <RadioGroup
+                    value={paymentMethod}
+                    onValueChange={setPaymentMethod}
+                    className="space-y-3"
+                  >
                     <div className="flex items-center space-x-2">
-                      <Input
-                        type="radio"
-                        id="credit-card"
-                        name="payment-method"
-                        value="credit-card"
-                        checked={paymentMethod === 'credit-card'}
-                        onChange={() => setPaymentMethod('credit-card')}
-                      />
-                      <Label htmlFor="credit-card">Credit Card</Label>
+                      <RadioGroupItem value="credit-card" id="credit-card" />
+                      <Label htmlFor="credit-card">Credit/Debit Card</Label>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <Input
-                        type="radio"
-                        id="paypal"
-                        name="payment-method"
-                        value="paypal"
-                        checked={paymentMethod === 'paypal'}
-                        onChange={() => setPaymentMethod('paypal')}
-                      />
-                      <Label htmlFor="paypal">PayPal</Label>
+                      <RadioGroupItem value="upi" id="upi" />
+                      <Label htmlFor="upi">UPI</Label>
                     </div>
-                  </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="net-banking" id="net-banking" />
+                      <Label htmlFor="net-banking">Net Banking</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="cod" id="cod" />
+                      <Label htmlFor="cod">Cash on Delivery</Label>
+                    </div>
+                  </RadioGroup>
                 </CardContent>
               </Card>
 
@@ -193,23 +204,30 @@ const Checkout = () => {
                   <ul className="space-y-3">
                     {cart.map((item) => (
                       <li key={item.product.id} className="flex justify-between">
-                        <span>{item.product.name}</span>
-                        <span>{formatPrice(item.product.price)}</span>
+                        <span>{item.product.name} x {item.quantity}</span>
+                        <span>{formatPrice(item.product.price * item.quantity)}</span>
                       </li>
                     ))}
                   </ul>
-                  <div className="flex justify-between font-medium mt-4">
-                    <span>Total</span>
+                  <div className="flex justify-between mt-4 pt-4 border-t">
+                    <span className="text-muted-foreground">Subtotal</span>
                     <span>{formatPrice(getTotal())}</span>
                   </div>
+                  <div className="flex justify-between mt-2">
+                    <span className="text-muted-foreground">Shipping</span>
+                    <span>{getTotal() > 1000 ? 'Free' : formatPrice(100)}</span>
+                  </div>
+                  <div className="flex justify-between font-medium mt-2 pt-2 border-t">
+                    <span>Total</span>
+                    <span>{formatPrice(getTotal() > 1000 ? getTotal() : getTotal() + 100)}</span>
+                  </div>
                 </CardContent>
+                <CardFooter>
+                  <Button disabled={isSubmitting} className="w-full bg-farm-green hover:bg-farm-green/90">
+                    {isSubmitting ? "Placing Order..." : "Place Order"}
+                  </Button>
+                </CardFooter>
               </Card>
-
-              <CardFooter>
-                <Button disabled={isSubmitting} className="w-full bg-farm-green hover:bg-farm-green/90">
-                  {isSubmitting ? "Placing Order..." : "Place Order"}
-                </Button>
-              </CardFooter>
             </form>
           )}
         </div>
