@@ -7,6 +7,9 @@ import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { Clock } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
+import { useAuth } from '@/context/AuthContext';
+import { placeBid } from '@/services/productService';
+import { supabase } from '@/integrations/supabase/client';
 
 interface AuctionCardProps {
   auction: Auction;
@@ -15,8 +18,39 @@ interface AuctionCardProps {
 }
 
 const AuctionCard = ({ auction, product, onViewHistory }: AuctionCardProps) => {
+  const { user } = useAuth();
   const [timeLeft, setTimeLeft] = useState<string>("");
   const [bidAmount, setBidAmount] = useState<number>(auction.currentPrice + 0.25);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [currentAuction, setCurrentAuction] = useState<Auction>(auction);
+  
+  // Subscribe to real-time updates for this auction
+  useEffect(() => {
+    const channel = supabase
+      .channel('auction-updates')
+      .on('postgres_changes', {
+        event: 'UPDATE',
+        schema: 'public',
+        table: 'auctions',
+        filter: `id=eq.${auction.id}`
+      }, (payload) => {
+        // Update auction data when it changes
+        setCurrentAuction({
+          ...currentAuction,
+          currentPrice: payload.new.current_price,
+          bidCount: payload.new.bid_count,
+          highestBidderId: payload.new.highest_bidder_id
+        });
+        
+        // Update bid amount if needed
+        setBidAmount(Math.max(bidAmount, payload.new.current_price + 0.25));
+      })
+      .subscribe();
+      
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [auction.id]);
 
   // Calculate time remaining for auction
   useEffect(() => {
@@ -53,14 +87,37 @@ const AuctionCard = ({ auction, product, onViewHistory }: AuctionCardProps) => {
     return () => clearInterval(timer);
   }, [auction.endTime]);
   
-  const handleBid = () => {
-    if (bidAmount <= auction.currentPrice) {
+  const handleBid = async () => {
+    if (!user) {
+      toast.error("Please log in to place a bid");
+      return;
+    }
+    
+    if (bidAmount <= currentAuction.currentPrice) {
       toast.error("Bid must be higher than the current price");
       return;
     }
     
-    // Here we would normally make an API call to place the bid
-    toast.success(`Bid of $${bidAmount.toFixed(2)} placed for ${product.name}`);
+    setIsSubmitting(true);
+    
+    try {
+      const success = await placeBid(
+        auction.id,
+        user.id,
+        user.username,
+        bidAmount
+      );
+      
+      if (success) {
+        toast.success(`Bid of $${bidAmount.toFixed(2)} placed for ${product.name}`);
+      } else {
+        toast.error("Failed to place bid. Please try again.");
+      }
+    } catch (error: any) {
+      toast.error(error.message || "Failed to place bid");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
   
   const formatPrice = (price: number) => {
@@ -69,6 +126,8 @@ const AuctionCard = ({ auction, product, onViewHistory }: AuctionCardProps) => {
       currency: 'USD'
     }).format(price);
   };
+  
+  const isUserHighestBidder = user && currentAuction.highestBidderId === user.id;
 
   return (
     <Card className="overflow-hidden h-full flex flex-col">
@@ -85,6 +144,13 @@ const AuctionCard = ({ auction, product, onViewHistory }: AuctionCardProps) => {
             Auction
           </Badge>
         </div>
+        {isUserHighestBidder && (
+          <div className="absolute top-2 left-2">
+            <Badge className="bg-green-500 text-white">
+              Your bid leads!
+            </Badge>
+          </div>
+        )}
       </div>
       
       <CardHeader className="pb-2">
@@ -99,12 +165,12 @@ const AuctionCard = ({ auction, product, onViewHistory }: AuctionCardProps) => {
           <div>
             <p className="text-xs text-muted-foreground">Current bid:</p>
             <p className="font-bold text-xl text-farm-accent-orange">
-              {formatPrice(auction.currentPrice)}
+              {formatPrice(currentAuction.currentPrice)}
             </p>
           </div>
           <div className="text-right">
             <p className="text-xs text-muted-foreground">Bids:</p>
-            <p className="font-medium">{auction.bidCount}</p>
+            <p className="font-medium">{currentAuction.bidCount}</p>
           </div>
         </div>
         
@@ -121,22 +187,29 @@ const AuctionCard = ({ auction, product, onViewHistory }: AuctionCardProps) => {
       </CardContent>
       
       <CardFooter className="flex flex-col gap-3 pt-2">
-        <div className="flex w-full">
-          <input 
-            type="number"
-            value={bidAmount}
-            onChange={(e) => setBidAmount(parseFloat(e.target.value))}
-            step={0.25}
-            min={auction.currentPrice + 0.01}
-            className="w-2/3 border rounded-l px-3 py-2 text-sm"
-          />
-          <Button 
-            className="w-1/3 rounded-l-none bg-farm-accent-orange hover:bg-farm-accent-orange/80 text-white"
-            onClick={handleBid}
-          >
-            Bid
-          </Button>
-        </div>
+        {timeLeft !== "Auction ended" ? (
+          <div className="flex w-full">
+            <input 
+              type="number"
+              value={bidAmount}
+              onChange={(e) => setBidAmount(parseFloat(e.target.value))}
+              step={0.25}
+              min={currentAuction.currentPrice + 0.01}
+              className="w-2/3 border rounded-l px-3 py-2 text-sm"
+            />
+            <Button 
+              className="w-1/3 rounded-l-none bg-farm-accent-orange hover:bg-farm-accent-orange/80 text-white"
+              onClick={handleBid}
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Bidding..." : "Bid"}
+            </Button>
+          </div>
+        ) : (
+          <div className="w-full p-2 text-center bg-muted rounded-md">
+            <p className="text-sm font-medium">This auction has ended</p>
+          </div>
+        )}
         
         <div className="flex w-full gap-2">
           {onViewHistory && (

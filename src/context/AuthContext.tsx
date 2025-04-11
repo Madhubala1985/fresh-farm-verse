@@ -1,153 +1,182 @@
+
 import { createContext, useContext, useState, ReactNode, useEffect } from "react";
 import { User, AuthContextType } from "@/types";
 import { toast } from "sonner";
-
-// Mock user data for demo purposes
-const mockUsers = [
-  {
-    id: "user1",
-    username: "farmer_joe",
-    email: "farmer@example.com",
-    password: "password123",
-    role: "farmer" as const,
-    profileImage: "/placeholder.svg",
-  },
-  {
-    id: "user2",
-    username: "consumer_amy",
-    email: "consumer@example.com",
-    password: "password123",
-    role: "consumer" as const,
-    profileImage: "/placeholder.svg",
-  },
-];
+import { supabase } from "@/integrations/supabase/client";
 
 // Create auth context
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Check for existing user session on mount
+  // Check for existing user session on mount and set up auth listener
   useEffect(() => {
-    const storedUser = localStorage.getItem("farmmarket_user");
-    if (storedUser) {
-      try {
-        const parsedUser = JSON.parse(storedUser);
-        setUser(parsedUser);
-      } catch (err) {
-        console.error("Failed to parse stored user:", err);
-        localStorage.removeItem("farmmarket_user");
+    // First set up auth state listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        if (session) {
+          try {
+            // Fetch user profile data from our profiles table
+            const { data: profileData, error: profileError } = await supabase
+              .from('profiles')
+              .select('*')
+              .eq('id', session.user.id)
+              .single();
+              
+            if (profileError) throw profileError;
+
+            const userData: User = {
+              id: session.user.id,
+              username: profileData.username,
+              email: session.user.email || '',
+              role: profileData.role,
+              profileImage: profileData.profile_image,
+              bio: profileData.bio || '',
+              location: profileData.location || '',
+            };
+            
+            setUser(userData);
+          } catch (err) {
+            console.error("Error fetching user profile:", err);
+            // Still set the basic user data even if profile fetch fails
+            setUser({
+              id: session.user.id,
+              username: session.user.email?.split('@')[0] || '',
+              email: session.user.email || '',
+              role: 'consumer',
+              profileImage: '/placeholder.svg',
+            });
+          }
+        } else {
+          setUser(null);
+        }
+        setIsLoading(false);
       }
-    }
+    );
+
+    // Check for existing session on load
+    const initializeAuth = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        // The onAuthStateChange handler will take care of setting the user
+        // We don't need to duplicate that logic here
+        if (!session) {
+          setIsLoading(false);
+        }
+      } catch (err) {
+        console.error("Error checking auth session:", err);
+        setIsLoading(false);
+      }
+    };
+
+    initializeAuth();
+
+    // Cleanup subscription when component unmounts
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
-  // Mock login function
+  // Login function
   const login = async (email: string, password: string) => {
     try {
       setIsLoading(true);
       setError(null);
       
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const { data, error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
       
-      const foundUser = mockUsers.find(user => user.email === email);
+      if (signInError) throw signInError;
       
-      if (!foundUser || foundUser.password !== password) {
-        throw new Error("Invalid email or password");
-      }
-      
-      // Remove password from user object before setting in state
-      const { password: _, ...userWithoutPassword } = foundUser;
-      
-      setUser(userWithoutPassword);
-      toast.success(`Welcome back, ${userWithoutPassword.username}!`);
-      
-      // Store in local storage
-      localStorage.setItem("farmmarket_user", JSON.stringify(userWithoutPassword));
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Login failed");
+      toast.success(`Welcome back!`);
+    } catch (err: any) {
+      setError(err.message || "Login failed");
       toast.error("Login failed. Please check your credentials.");
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Mock registration function
+  // Registration function
   const register = async (userData: Partial<User> & { password: string }) => {
     try {
       setIsLoading(true);
       setError(null);
       
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Register user with Supabase Auth
+      const { data, error: signUpError } = await supabase.auth.signUp({
+        email: userData.email || '',
+        password: userData.password,
+        options: {
+          data: {
+            username: userData.username,
+            role: userData.role || 'consumer',
+            profile_image: userData.profileImage || '/placeholder.svg'
+          }
+        }
+      });
       
-      // Check if user already exists
-      if (mockUsers.some(user => user.email === userData.email)) {
-        throw new Error("User with this email already exists");
-      }
+      if (signUpError) throw signUpError;
       
-      // Create new user (in a real app, this would be an API call)
-      const newUser: User = {
-        id: `user${mockUsers.length + 1}`,
-        username: userData.username || "",
-        email: userData.email || "",
-        role: userData.role || "consumer",
-        profileImage: userData.profileImage || "/placeholder.svg",
-      };
-      
-      // In a real app, we would save the new user to the database here
-      
-      // Set user without password
-      setUser(newUser);
-      toast.success(`Welcome to FarmMarket, ${newUser.username}!`);
-      
-      // Store in local storage
-      localStorage.setItem("farmmarket_user", JSON.stringify(newUser));
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Registration failed");
-      toast.error("Registration failed. Please try again.");
+      toast.success(`Welcome to FarmMarket!`);
+    } catch (err: any) {
+      setError(err.message || "Registration failed");
+      toast.error("Registration failed. " + (err.message || "Please try again."));
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Mock updateUserProfile function
+  // Update user profile function
   const updateUserProfile = async (userData: Partial<User>) => {
     try {
       setIsLoading(true);
       setError(null);
       
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
       if (!user) {
         throw new Error("User not authenticated");
       }
       
-      // Update user data
-      const updatedUser = { ...user, ...userData };
+      // Update the profile in our profiles table
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({
+          username: userData.username,
+          bio: userData.bio,
+          location: userData.location,
+          profile_image: userData.profileImage
+        })
+        .eq('id', user.id);
       
-      setUser(updatedUser);
+      if (updateError) throw updateError;
+      
+      // Update local user state
+      setUser(prev => prev ? { ...prev, ...userData } : null);
+      
       toast.success("Profile updated successfully");
-      
-      // Update in local storage
-      localStorage.setItem("farmmarket_user", JSON.stringify(updatedUser));
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Profile update failed");
+    } catch (err: any) {
+      setError(err.message || "Profile update failed");
       toast.error("Failed to update profile");
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Mock logout function
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem("farmmarket_user");
-    toast.info("You have been logged out");
+  // Logout function
+  const logout = async () => {
+    try {
+      await supabase.auth.signOut();
+      toast.info("You have been logged out");
+    } catch (err) {
+      console.error("Error during logout:", err);
+      toast.error("Logout failed");
+    }
   };
 
   return (

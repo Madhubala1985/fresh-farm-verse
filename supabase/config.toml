@@ -1,1 +1,5 @@
+
 project_id = "htvjlttlikjhmthbxtvh"
+
+[functions.increment-bid-count]
+verify_jwt = true

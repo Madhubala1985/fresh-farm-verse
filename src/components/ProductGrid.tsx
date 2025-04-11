@@ -1,9 +1,10 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ProductCard from './ProductCard';
 import { Product } from '@/types';
+import { getProducts, getAuctionProducts, getProductsByFarmer } from '@/services/productService';
+import { Loader2 } from 'lucide-react';
 
-// Mock data for products with Indian crops, pulses and vegetables
+// Temporarily keep the mock data for fallback
 export const MOCK_PRODUCTS: Product[] = [
   // Crops
   {
@@ -615,59 +616,4 @@ export const MOCK_PRODUCTS: Product[] = [
     farmerId: "farmer2",
     farmerName: "Green Harvest",
     organic: true,
-    seasonal: true,
-    stock: 35,
-    unit: "kg",
-    createdAt: "2023-03-24T10:00:00Z"
-  }
-];
-
-interface ProductGridProps {
-  title?: string;
-  showFilters?: boolean;
-  farmerId?: string;
-  auctionsOnly?: boolean;
-}
-
-const ProductGrid = ({ title, showFilters, farmerId, auctionsOnly }: ProductGridProps) => {
-  // Filter products based on props
-  const getFilteredProducts = (): Product[] => {
-    let filteredProducts = [...MOCK_PRODUCTS];
-    
-    // Filter by farmerId if provided
-    if (farmerId) {
-      filteredProducts = filteredProducts.filter(product => product.farmerId === farmerId);
-    }
-    
-    // Filter to show only auction products if auctionsOnly is true
-    if (auctionsOnly) {
-      filteredProducts = filteredProducts.filter(product => product.auction);
-    }
-    
-    return filteredProducts;
-  };
-  
-  const products = getFilteredProducts();
-  
-  return (
-    <div className="w-full">
-      {title && (
-        <h2 className="text-2xl font-bold mb-6">{title}</h2>
-      )}
-      
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {products.length > 0 ? (
-          products.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))
-        ) : (
-          <div className="col-span-full text-center py-12">
-            <p className="text-muted-foreground">No products found.</p>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
-
-export default ProductGrid;
+    seasonal:

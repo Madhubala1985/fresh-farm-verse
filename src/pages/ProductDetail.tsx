@@ -4,13 +4,15 @@ import { useParams } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { ShoppingBag, Truck } from "lucide-react";
+import { ShoppingBag, Truck, Loader2 } from "lucide-react";
 import { useCart } from '@/context/CartContext';
 import { Product } from '@/types';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import WishlistButton from '@/components/WishlistButton';
 import CompareButton from '@/components/CompareButton';
+import { getProductById } from '@/services/productService';
+import { MOCK_PRODUCTS } from '@/components/ProductGrid';
 
 const ProductDetail = () => {
   const { productId } = useParams<{ productId: string }>();
@@ -25,27 +27,23 @@ const ProductDetail = () => {
     const fetchProduct = async () => {
       setLoading(true);
       try {
-        // Replace with your actual data fetching logic
-        const mockProduct: Product = {
-          id: productId || '1',
-          name: "Organic Tomatoes",
-          description: "Fresh, locally grown organic tomatoes from Maharashtra farms. Perfect for salads and cooking.",
-          image: "https://images.unsplash.com/photo-1600247454695-4c4a895b8199?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fHRvbWF0b3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60",
-          price: 80,
-          category: "Vegetables",
-          farmerId: "1",
-          farmerName: "Green Acres Farm, Nashik",
-          organic: true,
-          seasonal: true,
-          stock: 10,
-          unit: "kg",
-          createdAt: new Date().toISOString(),
-          rating: 4.5,
-          numReviews: 28,
-          countInStock: 10,
-        };
-        setProduct(mockProduct);
-        setError(null);
+        if (!productId) throw new Error("Product ID is required");
+        
+        const fetchedProduct = await getProductById(productId);
+        
+        if (fetchedProduct) {
+          setProduct(fetchedProduct);
+          setError(null);
+        } else {
+          // If real product not found, try to find it in mock data as fallback
+          const mockProduct = MOCK_PRODUCTS.find(p => p.id === productId);
+          if (mockProduct) {
+            setProduct(mockProduct);
+            setError("Using mock data - product not found in database");
+          } else {
+            throw new Error("Product not found");
+          }
+        }
       } catch (err: any) {
         setError(err.message || "Failed to fetch product");
         setProduct(null);
@@ -71,15 +69,40 @@ const ProductDetail = () => {
   };
 
   if (loading) {
-    return <div>Loading product details...</div>;
+    return (
+      <div className="flex flex-col min-h-screen">
+        <Navbar />
+        <div className="flex-grow flex items-center justify-center">
+          <Loader2 className="h-12 w-12 animate-spin text-farm-green" />
+        </div>
+        <Footer />
+      </div>
+    );
   }
 
-  if (error) {
-    return <div>Error: {error}</div>;
+  if (error && !product) {
+    return (
+      <div className="flex flex-col min-h-screen">
+        <Navbar />
+        <div className="flex-grow flex items-center justify-center flex-col">
+          <h2 className="text-2xl font-bold mb-4">Error</h2>
+          <p className="text-red-500">{error}</p>
+        </div>
+        <Footer />
+      </div>
+    );
   }
 
   if (!product) {
-    return <div>Product not found</div>;
+    return (
+      <div className="flex flex-col min-h-screen">
+        <Navbar />
+        <div className="flex-grow flex items-center justify-center">
+          <h2 className="text-2xl font-bold">Product not found</h2>
+        </div>
+        <Footer />
+      </div>
+    );
   }
 
   return (
@@ -87,6 +110,11 @@ const ProductDetail = () => {
       <Navbar />
       <div className="flex-grow">
         <div className="container mx-auto px-4 py-8">
+          {error && (
+            <div className="mb-4 p-2 bg-yellow-50 border border-yellow-200 rounded text-sm text-yellow-800">
+              {error}
+            </div>
+          )}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Product Image */}
             <div className="relative">
@@ -120,7 +148,7 @@ const ProductDetail = () => {
                   ))}
                 </div>
                 <span className="ml-2 text-gray-600">
-                  ({product?.numReviews} Reviews)
+                  ({product?.numReviews || 0} Reviews)
                 </span>
               </div>
 
@@ -137,7 +165,7 @@ const ProductDetail = () => {
                   <span className="text-sm font-normal ml-1">per {product?.unit}</span>
                 </span>
                 <span className="text-gray-500">
-                  In Stock: {product?.countInStock}
+                  In Stock: {product?.stock}
                 </span>
               </div>
 
@@ -156,7 +184,7 @@ const ProductDetail = () => {
                     type="number"
                     value={quantity}
                     onChange={(e) =>
-                      setQuantity(parseInt(e.target.value, 10))
+                      setQuantity(parseInt(e.target.value, 10) || 1)
                     }
                     className="w-16 text-center"
                   />
@@ -166,7 +194,7 @@ const ProductDetail = () => {
                     className="rounded-full"
                     onClick={() =>
                       setQuantity(
-                        Math.min(product?.countInStock || 10, quantity + 1)
+                        Math.min(product?.stock || 10, quantity + 1)
                       )
                     }
                   >
@@ -177,7 +205,7 @@ const ProductDetail = () => {
                 <Button
                   className="bg-green-500 text-white rounded-full hover:bg-green-600 flex-1"
                   onClick={handleAddToCart}
-                  disabled={product?.countInStock === 0}
+                  disabled={product?.stock === 0}
                 >
                   <ShoppingBag className="mr-2 h-4 w-4" />
                   Add to Cart
