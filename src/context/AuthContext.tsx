@@ -28,14 +28,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
               
             if (profileError) throw profileError;
 
+            // Since the profiles table doesn't have all the fields we need,
+            // we'll create a user object with default values where necessary
             const userData: User = {
               id: session.user.id,
-              username: profileData.username,
+              username: session.user.email?.split('@')[0] || '',
               email: session.user.email || '',
-              role: profileData.role,
-              profileImage: profileData.profile_image,
-              bio: profileData.bio || '',
-              location: profileData.location || '',
+              role: profileData.role as 'farmer' | 'consumer' | 'admin',
+              profileImage: '/placeholder.svg',
+              bio: '',
+              location: '',
             };
             
             setUser(userData);
@@ -115,9 +117,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         password: userData.password,
         options: {
           data: {
-            username: userData.username,
+            // Only include data that matches the profiles table structure
             role: userData.role || 'consumer',
-            profile_image: userData.profileImage || '/placeholder.svg'
           }
         }
       });
@@ -143,14 +144,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         throw new Error("User not authenticated");
       }
       
-      // Update the profile in our profiles table
+      // Update the profile in our profiles table - only update fields that exist in the table
       const { error: updateError } = await supabase
         .from('profiles')
         .update({
-          username: userData.username,
-          bio: userData.bio,
-          location: userData.location,
-          profile_image: userData.profileImage
+          email: userData.email,
+          role: userData.role
         })
         .eq('id', user.id);
       
