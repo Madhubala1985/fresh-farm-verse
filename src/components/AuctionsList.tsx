@@ -1,16 +1,9 @@
 
 import { Product } from '@/types';
 import AuctionCard from './AuctionCard';
-import { MOCK_PRODUCTS } from './ProductGrid';
-
-// Filter products to get only those with auctions
-const getAuctionProducts = () => {
-  return MOCK_PRODUCTS.filter(product => product.auction);
-};
+import ProductGrid from './ProductGrid';
 
 const AuctionsList = () => {
-  const auctionProducts = getAuctionProducts();
-  
   return (
     <div className="w-full">
       <div className="mb-6">
@@ -20,21 +13,7 @@ const AuctionsList = () => {
         </p>
       </div>
       
-      {auctionProducts.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {auctionProducts.map((product) => (
-            <AuctionCard 
-              key={`auction-${product.auction?.id}`} 
-              auction={product.auction!} 
-              product={product} 
-            />
-          ))}
-        </div>
-      ) : (
-        <div className="text-center py-12">
-          <p className="text-muted-foreground">No active auctions at the moment.</p>
-        </div>
-      )}
+      <ProductGrid auctionsOnly={true} />
     </div>
   );
 };
