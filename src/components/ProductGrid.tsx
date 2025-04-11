@@ -616,4 +616,114 @@ export const MOCK_PRODUCTS: Product[] = [
     farmerId: "farmer2",
     farmerName: "Green Harvest",
     organic: true,
-    seasonal:
+    seasonal: false,
+    stock: 65,
+    unit: "kg",
+    createdAt: "2023-03-24T13:00:00Z"
+  }
+];
+
+interface ProductGridProps {
+  title?: string;
+  auctionsOnly?: boolean;
+  farmerId?: string;
+  showFilters?: boolean;
+}
+
+const ProductGrid: React.FC<ProductGridProps> = ({
+  title = "All Products",
+  auctionsOnly = false,
+  farmerId,
+  showFilters = false,
+}) => {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  
+  useEffect(() => {
+    const fetchProducts = async () => {
+      setIsLoading(true);
+      try {
+        let fetchedProducts: Product[];
+        
+        if (auctionsOnly) {
+          fetchedProducts = await getAuctionProducts();
+        } else if (farmerId) {
+          fetchedProducts = await getProductsByFarmer(farmerId);
+        } else {
+          fetchedProducts = await getProducts();
+        }
+        
+        // If no products from API or error, use mock data
+        if (!fetchedProducts || fetchedProducts.length === 0) {
+          // Filter mock data based on props
+          if (auctionsOnly) {
+            setProducts(MOCK_PRODUCTS.filter(product => product.auction));
+          } else if (farmerId) {
+            setProducts(MOCK_PRODUCTS.filter(product => product.farmerId === farmerId));
+          } else {
+            setProducts(MOCK_PRODUCTS);
+          }
+        } else {
+          setProducts(fetchedProducts);
+        }
+      } catch (err) {
+        console.error("Error fetching products:", err);
+        setError("Failed to load products. Please try again later.");
+        
+        // Use mock data as fallback
+        if (auctionsOnly) {
+          setProducts(MOCK_PRODUCTS.filter(product => product.auction));
+        } else if (farmerId) {
+          setProducts(MOCK_PRODUCTS.filter(product => product.farmerId === farmerId));
+        } else {
+          setProducts(MOCK_PRODUCTS);
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, [auctionsOnly, farmerId]);
+  
+  if (isLoading) {
+    return (
+      <div className="w-full flex justify-center items-center py-12">
+        <Loader2 className="h-8 w-8 animate-spin text-farm-green" />
+        <span className="ml-2 text-lg">Loading products...</span>
+      </div>
+    );
+  }
+  
+  if (error) {
+    return (
+      <div className="w-full py-8 text-center">
+        <p className="text-red-500">{error}</p>
+        <p>Showing fallback data instead</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-full">
+      {title && (
+        <h2 className="text-2xl font-bold mb-6">{title}</h2>
+      )}
+      
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {products.map((product) => (
+          <ProductCard key={product.id} product={product} />
+        ))}
+      </div>
+      
+      {products.length === 0 && (
+        <div className="text-center py-12">
+          <p className="text-lg text-muted-foreground">No products found</p>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default ProductGrid;
