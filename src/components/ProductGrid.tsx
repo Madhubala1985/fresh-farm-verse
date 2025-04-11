@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import ProductCard from './ProductCard';
 import { Product } from '@/types';
@@ -617,4 +618,26 @@ export const MOCK_PRODUCTS: Product[] = [
     seasonal: true,
     stock: 35,
     unit: "kg",
-    createdAt: "2023-03-24T1
+    createdAt: "2023-03-24T10:00:00Z"
+  }
+];
+
+const ProductGrid = ({ title, showFilters }: { title?: string; showFilters?: boolean }) => {
+  const [products] = useState<Product[]>(MOCK_PRODUCTS);
+  
+  return (
+    <div className="w-full">
+      {title && (
+        <h2 className="text-2xl font-bold mb-6">{title}</h2>
+      )}
+      
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {products.map((product) => (
+          <ProductCard key={product.id} product={product} />
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default ProductGrid;
