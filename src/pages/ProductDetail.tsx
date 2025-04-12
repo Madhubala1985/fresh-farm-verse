@@ -23,6 +23,9 @@ const ProductDetail = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Fallback image from Pexels if the product image fails to load
+  const fallbackImage = 'https://images.pexels.com/photos/2286901/pexels-photo-2286901.jpeg';
+
   useEffect(() => {
     const fetchProduct = async () => {
       setLoading(true);
@@ -122,6 +125,11 @@ const ProductDetail = () => {
                 src={product?.image}
                 alt={product?.name}
                 className="w-full h-auto rounded-lg shadow-md"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.onerror = null;
+                  target.src = fallbackImage;
+                }}
               />
               <div className="absolute top-4 right-4">
                 <WishlistButton product={product} variant="icon" className="!relative !top-0 !right-0" />

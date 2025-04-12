@@ -24,7 +24,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 
-// Mock data for farmer's product listings
+// Mock data for farmer's product listings with reliable Pexels image URLs
 const mockListings = [
   {
     id: "p1",
@@ -36,7 +36,7 @@ const mockListings = [
     organic: true,
     status: "active",
     createdAt: "2023-04-10T12:00:00Z",
-    image: "https://images.unsplash.com/photo-1586201375761-83865001e31c?ixlib=rb-4.0.3&auto=format&fit=crop&q=80&h=300&w=300",
+    image: "https://images.pexels.com/photos/4110251/pexels-photo-4110251.jpeg",
     views: 124,
     orders: 5
   },
@@ -50,7 +50,7 @@ const mockListings = [
     organic: true,
     status: "active",
     createdAt: "2023-04-08T10:00:00Z",
-    image: "https://images.unsplash.com/photo-1594057687740-2710b2f9d9b1?ixlib=rb-4.0.3&auto=format&fit=crop&q=80&h=300&w=300",
+    image: "https://images.pexels.com/photos/1327838/pexels-photo-1327838.jpeg",
     views: 89,
     orders: 3
   },
@@ -64,7 +64,7 @@ const mockListings = [
     organic: false,
     status: "active",
     createdAt: "2023-04-11T09:30:00Z",
-    image: "https://images.unsplash.com/photo-1515016446269-8b0b53b9c86f?ixlib=rb-4.0.3&auto=format&fit=crop&q=80&h=300&w=300",
+    image: "https://images.pexels.com/photos/4198035/pexels-photo-4198035.jpeg",
     views: 45,
     orders: 1
   },
@@ -78,7 +78,7 @@ const mockListings = [
     organic: true,
     status: "low_stock",
     createdAt: "2023-04-07T08:45:00Z",
-    image: "https://images.unsplash.com/photo-1577258747307-0ee4163dc204?ixlib=rb-4.0.3&auto=format&fit=crop&q=80&h=300&w=300",
+    image: "https://images.pexels.com/photos/1373911/pexels-photo-1373911.jpeg",
     views: 56,
     orders: 2
   },
@@ -92,7 +92,7 @@ const mockListings = [
     organic: false,
     status: "paused",
     createdAt: "2023-04-06T14:20:00Z",
-    image: "https://images.unsplash.com/photo-1676037150008-6508c799bd3c?ixlib=rb-4.0.3&auto=format&fit=crop&q=80&h=300&w=300",
+    image: "https://images.pexels.com/photos/4198574/pexels-photo-4198574.jpeg",
     views: 32,
     orders: 0
   },
@@ -209,6 +209,7 @@ const ListingsManager = () => {
           </div>
         </div>
       </CardHeader>
+      
       <CardContent>
         <div className="space-y-4">
           {filteredListings.length === 0 ? (
@@ -223,6 +224,11 @@ const ListingsManager = () => {
                   src={listing.image} 
                   alt={listing.name} 
                   className="w-16 h-16 object-cover rounded"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.onerror = null;
+                    target.src = 'https://images.pexels.com/photos/2286901/pexels-photo-2286901.jpeg';
+                  }}
                 />
                 
                 <div className="flex-1">

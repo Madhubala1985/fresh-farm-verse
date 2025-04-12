@@ -26,6 +26,9 @@ const ProductCard = ({ product }: ProductCardProps) => {
     addItem(product);
   };
 
+  // Placeholder image from Pexels if the product image fails to load
+  const fallbackImage = 'https://images.pexels.com/photos/2286901/pexels-photo-2286901.jpeg';
+
   return (
     <div className="group bg-white rounded-lg border border-border overflow-hidden hover:shadow-md transition-all duration-300 flex flex-col h-full">
       {/* Product Image */}
@@ -34,6 +37,11 @@ const ProductCard = ({ product }: ProductCardProps) => {
           src={product.image}
           alt={product.name}
           className="aspect-square w-full object-cover transition-transform duration-300 group-hover:scale-105"
+          onError={(e) => {
+            const target = e.target as HTMLImageElement;
+            target.onerror = null;
+            target.src = fallbackImage;
+          }}
         />
         
         {/* Wishlist Button */}

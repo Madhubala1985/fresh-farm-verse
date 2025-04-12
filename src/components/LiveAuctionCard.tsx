@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Product, Auction } from '@/types';
 import { Button } from '@/components/ui/button';
@@ -31,6 +30,9 @@ const LiveAuctionCard = ({ product, auction, onBid, onViewHistory, onClose }: Li
   const [bidAmount, setBidAmount] = useState<number>(auction.currentPrice + 0.25);
   const [bidHistory, setBidHistory] = useState<{amount: number, time: string, user: string}[]>([]);
   const [isUserHighestBidder, setIsUserHighestBidder] = useState<boolean>(false);
+  
+  // Fallback image from Pexels if the product image fails to load
+  const fallbackImage = 'https://images.pexels.com/photos/2286901/pexels-photo-2286901.jpeg';
   
   // Generate some mock bid history
   useEffect(() => {
@@ -139,6 +141,11 @@ const LiveAuctionCard = ({ product, auction, onBid, onViewHistory, onClose }: Li
           src={product.image} 
           alt={product.name}
           className="w-full h-full object-cover"
+          onError={(e) => {
+            const target = e.target as HTMLImageElement;
+            target.onerror = null;
+            target.src = fallbackImage;
+          }}
         />
         <button 
           onClick={onClose}

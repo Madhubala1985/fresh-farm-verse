@@ -19,7 +19,7 @@ export async function getProducts(): Promise<Product[]> {
       description: item.description || '',
       price: item.price,
       category: item.category,
-      image: item.image_url || '/placeholder.svg',
+      image: item.image_url || 'https://images.pexels.com/photos/2286901/pexels-photo-2286901.jpeg',
       farmerId: item.farmer_id,
       farmerName: "Farmer", // We don't have this field in the crops table
       organic: item.organic,
@@ -63,7 +63,7 @@ export async function getProductsByFarmer(farmerId: string): Promise<Product[]> 
       description: item.description || '',
       price: item.price,
       category: item.category,
-      image: item.image_url || '/placeholder.svg',
+      image: item.image_url || 'https://images.pexels.com/photos/2286901/pexels-photo-2286901.jpeg',
       farmerId: item.farmer_id,
       farmerName: "Farmer", // We don't have this field in the crops table
       organic: item.organic,
@@ -97,7 +97,7 @@ export async function getProductById(id: string): Promise<Product | null> {
       description: data.description || '',
       price: data.price,
       category: data.category,
-      image: data.image_url || '/placeholder.svg',
+      image: data.image_url || 'https://images.pexels.com/photos/2286901/pexels-photo-2286901.jpeg',
       farmerId: data.farmer_id,
       farmerName: "Farmer", // We don't have this field in the crops table
       organic: data.organic,
@@ -211,7 +211,7 @@ function mapProductFromDb(item: any): Product {
     description: item.description || '',
     price: item.price,
     category: item.category,
-    image: item.image_url || '/placeholder.svg',
+    image: item.image_url || 'https://images.pexels.com/photos/2286901/pexels-photo-2286901.jpeg',
     farmerId: item.farmer_id,
     farmerName: "Farmer", // We don't have this field in the crops table
     organic: item.organic || false,

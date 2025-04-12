@@ -24,6 +24,9 @@ const AuctionCard = ({ auction, product, onViewHistory }: AuctionCardProps) => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [currentAuction, setCurrentAuction] = useState<Auction>(auction);
   
+  // Fallback image from Pexels if the product image fails to load
+  const fallbackImage = 'https://images.pexels.com/photos/2286901/pexels-photo-2286901.jpeg';
+  
   // Subscribe to real-time updates for this auction
   useEffect(() => {
     const channel = supabase
@@ -137,6 +140,11 @@ const AuctionCard = ({ auction, product, onViewHistory }: AuctionCardProps) => {
             src={product.image} 
             alt={product.name}
             className="w-full aspect-square object-cover"
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.onerror = null;
+              target.src = fallbackImage;
+            }}
           />
         </Link>
         <div className="absolute top-2 right-2">

@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { 
   Card, 
@@ -29,13 +28,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
 
-// Mock auction data
+// Mock auction data with reliable Pexels image URLs
 const mockAuctions = [
   {
     id: "a1",
     productId: "p1",
     productName: "Premium Organic Rice",
-    productImage: "https://images.unsplash.com/photo-1586201375761-83865001e31c?ixlib=rb-4.0.3&auto=format&fit=crop&q=80&h=300&w=300",
+    productImage: "https://images.pexels.com/photos/4110251/pexels-photo-4110251.jpeg",
     startPrice: 2.00,
     currentPrice: 3.75,
     reservePrice: 3.00,
@@ -53,7 +52,7 @@ const mockAuctions = [
     id: "a2",
     productId: "p2",
     productName: "Premium Alphonso Mangoes",
-    productImage: "https://images.unsplash.com/photo-1591073113683-0adb3676426a?ixlib=rb-4.0.3&auto=format&fit=crop&q=80&h=300&w=300",
+    productImage: "https://images.pexels.com/photos/918643/pexels-photo-918643.jpeg",
     startPrice: 5.00,
     currentPrice: 7.50,
     reservePrice: 6.00,
@@ -71,7 +70,7 @@ const mockAuctions = [
     id: "a3",
     productId: "p3",
     productName: "First Harvest Tea Leaves",
-    productImage: "https://images.unsplash.com/photo-1597318181409-cf64d0b5d8a2?ixlib=rb-4.0.3&auto=format&fit=crop&q=80&h=300&w=300",
+    productImage: "https://images.pexels.com/photos/1493080/pexels-photo-1493080.jpeg",
     startPrice: 8.00,
     currentPrice: 12.25,
     reservePrice: 10.00,
@@ -89,7 +88,7 @@ const mockAuctions = [
     id: "a4",
     productId: "p4",
     productName: "Organic Turmeric",
-    productImage: "https://images.unsplash.com/photo-1615485020471-b66207f5e3bb?ixlib=rb-4.0.3&auto=format&fit=crop&q=80&h=300&w=300",
+    productImage: "https://images.pexels.com/photos/4198035/pexels-photo-4198035.jpeg",
     startPrice: 3.50,
     currentPrice: 3.50,
     reservePrice: 4.00,
@@ -107,7 +106,7 @@ const mockAuctions = [
     id: "a5",
     productId: "p5",
     productName: "Heritage Basmati Rice",
-    productImage: "https://images.unsplash.com/photo-1550828520-4cb496926fc9?ixlib=rb-4.0.3&auto=format&fit=crop&q=80&h=300&w=300",
+    productImage: "https://images.pexels.com/photos/4110251/pexels-photo-4110251.jpeg",
     startPrice: 4.00,
     currentPrice: 4.75,
     reservePrice: 5.50,
@@ -257,6 +256,11 @@ const FarmerAuctions = () => {
                           src={auction.productImage}
                           alt={auction.productName}
                           className="w-full h-full object-cover aspect-square md:aspect-auto"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.onerror = null;
+                            target.src = 'https://images.pexels.com/photos/2286901/pexels-photo-2286901.jpeg';
+                          }}
                         />
                       </div>
                       
