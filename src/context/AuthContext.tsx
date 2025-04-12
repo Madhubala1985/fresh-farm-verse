@@ -28,12 +28,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
               
             if (profileError) throw profileError;
 
-            // Since the profiles table doesn't have all the fields we need,
-            // we'll create a user object with default values where necessary
+            // Create a user object with data from the profiles table
             const userData: User = {
               id: session.user.id,
               username: session.user.email?.split('@')[0] || '',
-              email: session.user.email || '',
+              email: profileData.email || '',
               role: profileData.role as 'farmer' | 'consumer' | 'admin',
               profileImage: '/placeholder.svg',
               bio: '',
