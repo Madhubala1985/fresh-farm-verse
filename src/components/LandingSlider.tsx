@@ -9,47 +9,47 @@ interface LandingSliderProps {
   className?: string;
 }
 
-// Updated with more agriculture-related images using absolute URLs
+// Updated with more reliable agriculture-related images using absolute URLs
 const sliderImages = [
   {
-    src: 'https://images.unsplash.com/photo-1523741543316-beb7fc7023d8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2274&q=80',
-    alt: 'Indian farmer harvesting crops'
+    src: 'https://images.pexels.com/photos/2933243/pexels-photo-2933243.jpeg',
+    alt: 'Green farm field with crops'
   },
   {
-    src: 'https://images.unsplash.com/photo-1518977676601-b53f82aba655?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2370&q=80',
-    alt: 'Organic vegetables from Indian farms'
+    src: 'https://images.pexels.com/photos/2886937/pexels-photo-2886937.jpeg',
+    alt: 'Farmer working in vegetable garden'
   },
   {
-    src: 'https://images.unsplash.com/photo-1495107334309-fcf20504a5ab?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2370&q=80',
-    alt: 'Agricultural fields in rural India'
+    src: 'https://images.pexels.com/photos/974314/pexels-photo-974314.jpeg',
+    alt: 'Fresh organic vegetables harvest'
   },
   {
-    src: 'https://images.unsplash.com/photo-1464226184884-fa280b87c399?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2370&q=80',
-    alt: 'Fresh produce at an Indian farm market'
+    src: 'https://images.pexels.com/photos/2165688/pexels-photo-2165688.jpeg',
+    alt: 'Terraced rice fields'
   },
   {
-    src: 'https://images.unsplash.com/photo-1500937386664-56d1dfcd44a9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2370&q=80',
-    alt: 'Terraced rice fields in Asia'
+    src: 'https://images.pexels.com/photos/2252584/pexels-photo-2252584.jpeg',
+    alt: 'Colorful organic produce at farmers market'
   },
   {
-    src: 'https://images.unsplash.com/photo-1557234195-6f5f981c8078?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2370&q=80',
-    alt: 'Farmer examining crops in field'
+    src: 'https://images.pexels.com/photos/1458694/pexels-photo-1458694.jpeg',
+    alt: 'Person holding freshly harvested vegetables'
   },
   {
-    src: 'https://images.unsplash.com/photo-1505471768190-275e2ad7b3f9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2370&q=80',
-    alt: 'Colorful vegetables at farmers market'
+    src: 'https://images.pexels.com/photos/2255935/pexels-photo-2255935.jpeg',
+    alt: 'Farmer inspecting crops in field'
   },
   {
-    src: 'https://images.unsplash.com/photo-1629061364915-8ee7add06211?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2370&q=80',
-    alt: 'Hands holding fresh soil and young plant'
+    src: 'https://images.pexels.com/photos/2131784/pexels-photo-2131784.jpeg',
+    alt: 'Rural landscape with agricultural fields'
   },
   {
-    src: 'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2370&q=80',
-    alt: 'Traditional farming methods in India'
+    src: 'https://images.pexels.com/photos/3629537/pexels-photo-3629537.jpeg',
+    alt: 'Close-up of hands planting seedling'
   },
   {
-    src: 'https://images.unsplash.com/photo-1594061823759-9c8850f5d652?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2370&q=80',
-    alt: 'Fresh leafy greens from organic farm'
+    src: 'https://images.pexels.com/photos/2286901/pexels-photo-2286901.jpeg',
+    alt: 'Harvested vegetables in wooden crate'
   }
 ];
 
