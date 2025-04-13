@@ -7,6 +7,7 @@ import { Clock, Leaf } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import WishlistButton from './WishlistButton';
 import CompareButton from './CompareButton';
+import { getProductImageByName } from '@/utils/productImages';
 
 interface ProductCardProps {
   product: Product;
@@ -26,21 +27,21 @@ const ProductCard = ({ product }: ProductCardProps) => {
     addItem(product);
   };
 
-  // Placeholder image from Pexels if the product image fails to load
-  const fallbackImage = 'https://images.pexels.com/photos/2286901/pexels-photo-2286901.jpeg';
+  // Get image based on product name or use fallback
+  const productImage = product.image || getProductImageByName(product.name);
 
   return (
     <div className="group bg-white rounded-lg border border-border overflow-hidden hover:shadow-md transition-all duration-300 flex flex-col h-full">
       {/* Product Image */}
       <Link to={`/product/${product.id}`} className="block overflow-hidden relative">
         <img
-          src={product.image}
+          src={productImage}
           alt={product.name}
           className="aspect-square w-full object-cover transition-transform duration-300 group-hover:scale-105"
           onError={(e) => {
             const target = e.target as HTMLImageElement;
             target.onerror = null;
-            target.src = fallbackImage;
+            target.src = '/placeholder.svg';
           }}
         />
         

@@ -4,52 +4,53 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/autoplay';
+import { PRODUCT_IMAGES } from '@/utils/productImages';
 
 interface LandingSliderProps {
   className?: string;
 }
 
-// Updated with more reliable agriculture-related images using absolute URLs
+// Using our uploaded agricultural images for the slider
 const sliderImages = [
   {
-    src: 'https://images.pexels.com/photos/2933243/pexels-photo-2933243.jpeg',
-    alt: 'Green farm field with crops'
+    src: PRODUCT_IMAGES["Wheat"],
+    alt: 'Fresh wheat crop'
   },
   {
-    src: 'https://images.pexels.com/photos/2886937/pexels-photo-2886937.jpeg',
-    alt: 'Farmer working in vegetable garden'
+    src: PRODUCT_IMAGES["Green Beans"],
+    alt: 'Organic green beans'
   },
   {
-    src: 'https://images.pexels.com/photos/974314/pexels-photo-974314.jpeg',
-    alt: 'Fresh organic vegetables harvest'
+    src: PRODUCT_IMAGES["Eggplant"],
+    alt: 'Fresh eggplant harvest'
   },
   {
-    src: 'https://images.pexels.com/photos/2165688/pexels-photo-2165688.jpeg',
-    alt: 'Terraced rice fields'
+    src: PRODUCT_IMAGES["Cabbage"],
+    alt: 'Organic cabbage'
   },
   {
-    src: 'https://images.pexels.com/photos/2252584/pexels-photo-2252584.jpeg',
-    alt: 'Colorful organic produce at farmers market'
+    src: PRODUCT_IMAGES["Chili Peppers"],
+    alt: 'Red chili peppers'
   },
   {
-    src: 'https://images.pexels.com/photos/1458694/pexels-photo-1458694.jpeg',
-    alt: 'Person holding freshly harvested vegetables'
+    src: PRODUCT_IMAGES["Cotton"],
+    alt: 'Raw cotton'
   },
   {
-    src: 'https://images.pexels.com/photos/2255935/pexels-photo-2255935.jpeg',
-    alt: 'Farmer inspecting crops in field'
+    src: PRODUCT_IMAGES["Mung Beans"],
+    alt: 'Green mung beans'
   },
   {
-    src: 'https://images.pexels.com/photos/2131784/pexels-photo-2131784.jpeg',
-    alt: 'Rural landscape with agricultural fields'
+    src: PRODUCT_IMAGES["Peanuts"],
+    alt: 'Fresh peanuts'
   },
   {
-    src: 'https://images.pexels.com/photos/3629537/pexels-photo-3629537.jpeg',
-    alt: 'Close-up of hands planting seedling'
+    src: PRODUCT_IMAGES["Corn"],
+    alt: 'Fresh corn cobs'
   },
   {
-    src: 'https://images.pexels.com/photos/2286901/pexels-photo-2286901.jpeg',
-    alt: 'Harvested vegetables in wooden crate'
+    src: PRODUCT_IMAGES["Peaches"],
+    alt: 'Ripe peaches'
   }
 ];
 

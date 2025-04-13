@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 import { useAuth } from '@/context/AuthContext';
 import { placeBid } from '@/services/productService';
 import { supabase } from '@/integrations/supabase/client';
+import { getProductImageByName } from '@/utils/productImages';
 
 interface AuctionCardProps {
   auction: Auction;
@@ -24,8 +25,8 @@ const AuctionCard = ({ auction, product, onViewHistory }: AuctionCardProps) => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [currentAuction, setCurrentAuction] = useState<Auction>(auction);
   
-  // Fallback image from Pexels if the product image fails to load
-  const fallbackImage = 'https://images.pexels.com/photos/2286901/pexels-photo-2286901.jpeg';
+  // Get product image based on name or use existing image
+  const productImage = product.image || getProductImageByName(product.name);
   
   // Subscribe to real-time updates for this auction
   useEffect(() => {
@@ -137,13 +138,13 @@ const AuctionCard = ({ auction, product, onViewHistory }: AuctionCardProps) => {
       <div className="relative">
         <Link to={`/product/${product.id}`}>
           <img 
-            src={product.image} 
+            src={productImage} 
             alt={product.name}
             className="w-full aspect-square object-cover"
             onError={(e) => {
               const target = e.target as HTMLImageElement;
               target.onerror = null;
-              target.src = fallbackImage;
+              target.src = "/placeholder.svg";
             }}
           />
         </Link>

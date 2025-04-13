@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -13,6 +12,7 @@ import WishlistButton from '@/components/WishlistButton';
 import CompareButton from '@/components/CompareButton';
 import { getProductById } from '@/services/productService';
 import { MOCK_PRODUCTS } from '@/components/ProductGrid';
+import { getProductImageByName } from '@/utils/productImages';
 
 const ProductDetail = () => {
   const { productId } = useParams<{ productId: string }>();
@@ -22,9 +22,6 @@ const ProductDetail = () => {
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  // Fallback image from Pexels if the product image fails to load
-  const fallbackImage = 'https://images.pexels.com/photos/2286901/pexels-photo-2286901.jpeg';
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -108,6 +105,9 @@ const ProductDetail = () => {
     );
   }
 
+  // Get product image based on name or use existing image
+  const productImage = product?.image || (product ? getProductImageByName(product.name) : '/placeholder.svg');
+
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
@@ -122,13 +122,13 @@ const ProductDetail = () => {
             {/* Product Image */}
             <div className="relative">
               <img
-                src={product?.image}
+                src={productImage}
                 alt={product?.name}
                 className="w-full h-auto rounded-lg shadow-md"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
                   target.onerror = null;
-                  target.src = fallbackImage;
+                  target.src = "/placeholder.svg";
                 }}
               />
               <div className="absolute top-4 right-4">

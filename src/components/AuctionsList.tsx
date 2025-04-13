@@ -1,15 +1,15 @@
 
 import { Product } from '@/types';
-import AuctionCard from './AuctionCard';
 import ProductGrid from './ProductGrid';
+import { PRODUCT_IMAGES } from '@/utils/productImages';
 
-// Define reliable auction product images
+// Define auction product images using our uploaded images
 export const AUCTION_PRODUCT_IMAGES = [
-  'https://images.pexels.com/photos/2933243/pexels-photo-2933243.jpeg',
-  'https://images.pexels.com/photos/2886937/pexels-photo-2886937.jpeg',
-  'https://images.pexels.com/photos/974314/pexels-photo-974314.jpeg',
-  'https://images.pexels.com/photos/2165688/pexels-photo-2165688.jpeg',
-  'https://images.pexels.com/photos/2252584/pexels-photo-2252584.jpeg'
+  PRODUCT_IMAGES["Yellow Split Peas"],
+  PRODUCT_IMAGES["Wheat"],
+  PRODUCT_IMAGES["Green Beans"],
+  PRODUCT_IMAGES["Eggplant"],
+  PRODUCT_IMAGES["Cabbage"]
 ];
 
 const AuctionsList = () => {
