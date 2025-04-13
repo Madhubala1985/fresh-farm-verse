@@ -1,16 +1,6 @@
 
 import { Product } from '@/types';
 import ProductGrid from './ProductGrid';
-import { PRODUCT_IMAGES } from '@/utils/productImages';
-
-// Define auction product images using our uploaded images
-export const AUCTION_PRODUCT_IMAGES = [
-  PRODUCT_IMAGES["Yellow Split Peas"],
-  PRODUCT_IMAGES["Wheat"],
-  PRODUCT_IMAGES["Green Beans"],
-  PRODUCT_IMAGES["Eggplant"],
-  PRODUCT_IMAGES["Cabbage"]
-];
 
 const AuctionsList = () => {
   return (

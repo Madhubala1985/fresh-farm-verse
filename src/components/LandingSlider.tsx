@@ -4,53 +4,32 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/autoplay';
-import { PRODUCT_IMAGES } from '@/utils/productImages';
 
 interface LandingSliderProps {
   className?: string;
 }
 
-// Using our uploaded agricultural images for the slider
+// Generic farming related images for the slider
 const sliderImages = [
   {
-    src: PRODUCT_IMAGES["Wheat"],
+    src: '/placeholder.svg',
     alt: 'Fresh wheat crop'
   },
   {
-    src: PRODUCT_IMAGES["Green Beans"],
+    src: '/placeholder.svg',
     alt: 'Organic green beans'
   },
   {
-    src: PRODUCT_IMAGES["Eggplant"],
+    src: '/placeholder.svg',
     alt: 'Fresh eggplant harvest'
   },
   {
-    src: PRODUCT_IMAGES["Cabbage"],
+    src: '/placeholder.svg',
     alt: 'Organic cabbage'
   },
   {
-    src: PRODUCT_IMAGES["Chili Peppers"],
-    alt: 'Red chili peppers'
-  },
-  {
-    src: PRODUCT_IMAGES["Cotton"],
-    alt: 'Raw cotton'
-  },
-  {
-    src: PRODUCT_IMAGES["Mung Beans"],
-    alt: 'Green mung beans'
-  },
-  {
-    src: PRODUCT_IMAGES["Peanuts"],
-    alt: 'Fresh peanuts'
-  },
-  {
-    src: PRODUCT_IMAGES["Corn"],
-    alt: 'Fresh corn cobs'
-  },
-  {
-    src: PRODUCT_IMAGES["Peaches"],
-    alt: 'Ripe peaches'
+    src: '/placeholder.svg',
+    alt: 'Farm produce'
   }
 ];
 
